@@ -9,6 +9,16 @@ const TOPIC_TECH_MAP: Record<string, string> = {
   nuxt: 'Nuxt',
   angular: 'Angular',
   svelte: 'Svelte',
+  tailwindcss: 'Tailwind CSS',
+  tailwind: 'Tailwind CSS',
+  bootstrap: 'Bootstrap',
+  mui: 'Material UI',
+  materialui: 'Material UI',
+  chakraui: 'Chakra UI',
+  redux: 'Redux',
+  pinia: 'Pinia',
+  graphql: 'GraphQL',
+  apollo: 'Apollo GraphQL',
   node: 'Node.js',
   nodejs: 'Node.js',
   express: 'Express',
@@ -17,6 +27,33 @@ const TOPIC_TECH_MAP: Record<string, string> = {
   laravel: 'Laravel',
   codeigniter: 'CodeIgniter',
   symfony: 'Symfony',
+  spring: 'Spring Boot',
+  springboot: 'Spring Boot',
+  dotnet: '.NET',
+  aspnet: 'ASP.NET Core',
+  rails: 'Ruby on Rails',
+  ruby: 'Ruby',
+  django: 'Django',
+  flask: 'Flask',
+  fastapi: 'FastAPI',
+  prisma: 'Prisma',
+  postgresql: 'PostgreSQL',
+  mysql: 'MySQL',
+  mariadb: 'MariaDB',
+  sqlite: 'SQLite',
+  sqlserver: 'SQL Server',
+  mssql: 'SQL Server',
+  mongodb: 'MongoDB',
+  redis: 'Redis',
+  docker: 'Docker',
+  kubernetes: 'Kubernetes',
+  terraform: 'Terraform',
+  jenkins: 'Jenkins',
+  githubactions: 'GitHub Actions',
+  githubactionsworkflow: 'GitHub Actions',
+  gitlabci: 'GitLab CI',
+  firebase: 'Firebase',
+  supabase: 'Supabase',
   flutter: 'Flutter',
   reactnative: 'React Native',
   'react-native': 'React Native',
@@ -26,27 +63,19 @@ const TOPIC_TECH_MAP: Record<string, string> = {
   compose: 'Jetpack Compose',
   jetpackcompose: 'Jetpack Compose',
   'jetpack-compose': 'Jetpack Compose',
-  spring: 'Spring Boot',
-  springboot: 'Spring Boot',
-  django: 'Django',
-  flask: 'Flask',
-  fastapi: 'FastAPI',
-  prisma: 'Prisma',
-  postgresql: 'PostgreSQL',
-  mysql: 'MySQL',
-  sqlserver: 'SQL Server',
-  mssql: 'SQL Server',
-  mongodb: 'MongoDB',
-  redis: 'Redis',
-  docker: 'Docker',
-  git: 'Git',
-  firebase: 'Firebase',
+  kotlin: 'Android',
+  ionic: 'Ionic',
+  expo: 'Expo',
+  electron: 'Electron',
   retrofit: 'Retrofit',
   room: 'Room',
   hilt: 'Hilt',
   daggerhilt: 'Hilt',
-  tailwindcss: 'Tailwind CSS',
-  tailwind: 'Tailwind CSS',
+  rabbitmq: 'RabbitMQ',
+  kafka: 'Kafka',
+  go: 'Go',
+  gin: 'Gin',
+  fiber: 'Fiber',
 };
 
 const TOPIC_LANGUAGE_MAP: Record<string, string> = {
@@ -59,6 +88,9 @@ const TOPIC_LANGUAGE_MAP: Record<string, string> = {
   html: 'HTML',
   css: 'CSS',
   dart: 'Dart',
+  go: 'Go',
+  csharp: 'C#',
+  ruby: 'Ruby',
 };
 
 const PACKAGE_DEP_TECH_MAP: Record<string, string> = {
@@ -69,24 +101,55 @@ const PACKAGE_DEP_TECH_MAP: Record<string, string> = {
   nuxt: 'Nuxt',
   '@angular/core': 'Angular',
   svelte: 'Svelte',
+  tailwindcss: 'Tailwind CSS',
+  bootstrap: 'Bootstrap',
+  '@mui/material': 'Material UI',
+  '@chakra-ui/react': 'Chakra UI',
+  redux: 'Redux',
+  '@reduxjs/toolkit': 'Redux',
+  pinia: 'Pinia',
+  graphql: 'GraphQL',
+  '@apollo/client': 'Apollo GraphQL',
   express: 'Express',
   '@nestjs/core': 'NestJS',
+  'react-native': 'React Native',
+  expo: 'Expo',
+  ionic: 'Ionic',
+  electron: 'Electron',
   '@prisma/client': 'Prisma',
   prisma: 'Prisma',
-  tailwindcss: 'Tailwind CSS',
-  'react-native': 'React Native',
-  expo: 'React Native',
   mysql: 'MySQL',
   pg: 'PostgreSQL',
   postgres: 'PostgreSQL',
+  mariadb: 'MariaDB',
+  sqlite3: 'SQLite',
   mssql: 'SQL Server',
   mongodb: 'MongoDB',
+  mongoose: 'MongoDB',
   redis: 'Redis',
+  ioredis: 'Redis',
   firebase: 'Firebase',
+  '@supabase/supabase-js': 'Supabase',
+  kafka: 'Kafka',
+  kafkajs: 'Kafka',
+  amqplib: 'RabbitMQ',
 };
 
 const PACKAGE_DEP_LANGUAGE_MAP: Record<string, string> = {
   typescript: 'TypeScript',
+};
+
+const PYTHON_TECH_MAP: Record<string, string> = {
+  django: 'Django',
+  flask: 'Flask',
+  fastapi: 'FastAPI',
+  sqlalchemy: 'SQLAlchemy',
+  psycopg2: 'PostgreSQL',
+  mysqlclient: 'MySQL',
+  pymysql: 'MySQL',
+  redis: 'Redis',
+  pymongo: 'MongoDB',
+  firebaseadmin: 'Firebase',
 };
 
 function safeJsonParse<T>(raw?: string): T | null {
@@ -159,6 +222,9 @@ function addFromComposerJson(technologies: Set<string>, languages: Set<string>, 
     if (key === 'codeigniter4/framework') technologies.add('CodeIgniter');
     if (key.startsWith('symfony/')) technologies.add('Symfony');
     if (key === 'php') languages.add('PHP');
+    if (key.includes('predis') || key.includes('redis')) technologies.add('Redis');
+    if (key.includes('mongodb')) technologies.add('MongoDB');
+    if (key.includes('doctrine/dbal')) technologies.add('SQL');
   }
 }
 
@@ -167,10 +233,15 @@ function addFromPubspec(technologies: Set<string>, languages: Set<string>, pubsp
     return;
   }
 
+  const content = pubspecYaml.toLowerCase();
+
   if (/^\s*flutter\s*:/im.test(pubspecYaml) || /sdk\s*:\s*flutter/im.test(pubspecYaml)) {
     technologies.add('Flutter');
     languages.add('Dart');
   }
+
+  if (content.includes('firebase_')) technologies.add('Firebase');
+  if (content.includes('supabase_flutter')) technologies.add('Supabase');
 }
 
 function parseRequirementsPackages(requirementsTxt?: string): string[] {
@@ -198,9 +269,9 @@ function addFromPythonFiles(
   const hasToken = (needle: string): boolean =>
     requirementPackages.has(needle) || pyproject.includes(needle);
 
-  if (hasToken('django')) technologies.add('Django');
-  if (hasToken('flask')) technologies.add('Flask');
-  if (hasToken('fastapi')) technologies.add('FastAPI');
+  for (const [pkg, tech] of Object.entries(PYTHON_TECH_MAP)) {
+    if (hasToken(pkg)) technologies.add(tech);
+  }
 
   if (requirementPackages.size > 0 || pyproject.includes('[project]') || pyproject.includes('[tool.poetry]')) {
     languages.add('Python');
@@ -236,6 +307,9 @@ function addFromRepoLanguage(languages: Set<string>, language: string | null): v
   if (normalized === 'html') languages.add('HTML');
   if (normalized === 'css') languages.add('CSS');
   if (normalized === 'dart') languages.add('Dart');
+  if (normalized === 'go') languages.add('Go');
+  if (normalized === 'c#') languages.add('C#');
+  if (normalized === 'ruby') languages.add('Ruby');
 }
 
 function addFromAndroidFiles(technologies: Set<string>, languages: Set<string>, repo: GitHubRepo, files: RepoConfigFiles): void {
@@ -311,6 +385,46 @@ function addFromAndroidFiles(technologies: Set<string>, languages: Set<string>, 
   }
 }
 
+function addFromGenericCorpus(technologies: Set<string>, corpus: string): void {
+  const rules: Array<[string, string]> = [
+    ['spring-boot', 'Spring Boot'],
+    ['postgresql', 'PostgreSQL'],
+    ['mysql', 'MySQL'],
+    ['mariadb', 'MariaDB'],
+    ['sqlite', 'SQLite'],
+    ['sqlserver', 'SQL Server'],
+    ['mssql', 'SQL Server'],
+    ['mongodb', 'MongoDB'],
+    ['redis', 'Redis'],
+    ['firebase', 'Firebase'],
+    ['supabase', 'Supabase'],
+    ['retrofit', 'Retrofit'],
+    ['androidx.room', 'Room'],
+    ['room-runtime', 'Room'],
+    ['hilt', 'Hilt'],
+    ['androidx.', 'Android'],
+    ['com.android.', 'Android'],
+    ['kubernetes', 'Kubernetes'],
+    ['terraform', 'Terraform'],
+    ['jenkins', 'Jenkins'],
+    ['github/workflows', 'GitHub Actions'],
+    ['.github/workflows', 'GitHub Actions'],
+    ['rabbitmq', 'RabbitMQ'],
+    ['kafka', 'Kafka'],
+    ['gin-gonic/gin', 'Gin'],
+    ['gofiber/fiber', 'Fiber'],
+    ['dotnet', '.NET'],
+    ['aspnetcore', 'ASP.NET Core'],
+    ['rails', 'Ruby on Rails'],
+  ];
+
+  for (const [needle, tech] of rules) {
+    if (corpus.includes(needle)) {
+      technologies.add(tech);
+    }
+  }
+}
+
 function addFromContent(technologies: Set<string>, languages: Set<string>, repo: GitHubRepo, files: RepoConfigFiles): void {
   addFromPackageJson(technologies, languages, files.packageJson);
   addFromComposerJson(technologies, languages, files.composerJson);
@@ -346,12 +460,6 @@ function addFromContent(technologies: Set<string>, languages: Set<string>, repo:
     languages.add('Java');
   }
 
-  if (javaBuildCorpus.includes('mysql')) technologies.add('MySQL');
-  if (javaBuildCorpus.includes('postgresql')) technologies.add('PostgreSQL');
-  if (javaBuildCorpus.includes('microsoft.sqlserver') || javaBuildCorpus.includes('mssql')) {
-    technologies.add('SQL Server');
-  }
-
   const textCorpus = [
     files.packageJson,
     files.composerJson,
@@ -373,18 +481,7 @@ function addFromContent(technologies: Set<string>, languages: Set<string>, repo:
     .join('\n')
     .toLowerCase();
 
-  if (textCorpus.includes('spring-boot')) technologies.add('Spring Boot');
-  if (textCorpus.includes('postgresql')) technologies.add('PostgreSQL');
-  if (textCorpus.includes('mysql')) technologies.add('MySQL');
-  if (textCorpus.includes('sqlserver') || textCorpus.includes('mssql')) technologies.add('SQL Server');
-  if (textCorpus.includes('mongodb')) technologies.add('MongoDB');
-  if (textCorpus.includes('redis')) technologies.add('Redis');
-  if (textCorpus.includes('firebase')) technologies.add('Firebase');
-  if (textCorpus.includes('retrofit')) technologies.add('Retrofit');
-  if (textCorpus.includes('androidx.room') || textCorpus.includes('room-runtime')) technologies.add('Room');
-  if (textCorpus.includes('hilt')) technologies.add('Hilt');
-  if (textCorpus.includes('androidx.') || textCorpus.includes('com.android.')) technologies.add('Android');
-  if (textCorpus.includes('git')) technologies.add('Git');
+  addFromGenericCorpus(technologies, textCorpus);
 }
 
 export function detectStacks(

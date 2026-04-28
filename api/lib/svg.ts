@@ -13,7 +13,7 @@ const DEFAULT_LIGHT_THEME: CardTheme = {
 const DEFAULT_DARK_THEME: CardTheme = {
   bgColor: '#070b16',
   borderColor: '#243049',
-  titleColor: '#93c5fd',
+  titleColor: '#e2e8f0',
   textColor: '#9dd8ff',
   mutedTextColor: '#7fb2d8',
   sectionBgColor: '#11182c',
@@ -36,59 +36,101 @@ const SECTION_TITLES: Record<SectionKey, string> = {
 interface StackStyle {
   label: string;
   color: string;
-  textColor: string;
+  logo: string;
+  logoColor: string;
 }
 
 const DEFAULT_STACK_STYLE: StackStyle = {
   label: 'Stack',
-  color: '#334155',
-  textColor: '#ffffff',
+  color: '334155',
+  logo: 'github',
+  logoColor: 'white',
 };
 
 const STACK_STYLES: Record<string, StackStyle> = {
-  React: { label: 'React', color: '#20232A', textColor: '#61DAFB' },
-  TypeScript: { label: 'TypeScript', color: '#2F74C0', textColor: '#ffffff' },
-  JavaScript: { label: 'JavaScript', color: '#F7DF1E', textColor: '#111827' },
-  'Tailwind CSS': { label: 'TailwindCSS', color: '#0F172A', textColor: '#38BDF8' },
-  HTML5: { label: 'HTML5', color: '#E34F26', textColor: '#ffffff' },
-  CSS3: { label: 'CSS3', color: '#1572B6', textColor: '#ffffff' },
-  Vite: { label: 'Vite', color: '#646CFF', textColor: '#ffffff' },
-  'Next.js': { label: 'Next.js', color: '#000000', textColor: '#ffffff' },
-  Vue: { label: 'Vue', color: '#4FC08D', textColor: '#ffffff' },
-  Nuxt: { label: 'Nuxt', color: '#00DC82', textColor: '#0B1220' },
-  Angular: { label: 'Angular', color: '#DD0031', textColor: '#ffffff' },
-  Svelte: { label: 'Svelte', color: '#FF3E00', textColor: '#ffffff' },
-  PHP: { label: 'PHP', color: '#777BB4', textColor: '#ffffff' },
-  Laravel: { label: 'Laravel', color: '#FF2D20', textColor: '#ffffff' },
-  CodeIgniter: { label: 'CodeIgniter', color: '#DD4814', textColor: '#ffffff' },
-  'Node.js': { label: 'Node.js', color: '#339933', textColor: '#ffffff' },
-  Express: { label: 'Express', color: '#000000', textColor: '#ffffff' },
-  NestJS: { label: 'NestJS', color: '#E0234E', textColor: '#ffffff' },
-  'Spring Boot': { label: 'Spring Boot', color: '#6DB33F', textColor: '#ffffff' },
-  Symfony: { label: 'Symfony', color: '#000000', textColor: '#ffffff' },
-  Java: { label: 'Java', color: '#007396', textColor: '#ffffff' },
-  Kotlin: { label: 'Kotlin', color: '#7F52FF', textColor: '#ffffff' },
-  Python: { label: 'Python', color: '#3776AB', textColor: '#ffffff' },
-  Django: { label: 'Django', color: '#092E20', textColor: '#ffffff' },
-  Flask: { label: 'Flask', color: '#111827', textColor: '#ffffff' },
-  FastAPI: { label: 'FastAPI', color: '#009688', textColor: '#ffffff' },
-  Flutter: { label: 'Flutter', color: '#02569B', textColor: '#ffffff' },
-  'React Native': { label: 'React Native', color: '#20232A', textColor: '#61DAFB' },
-  Android: { label: 'Android', color: '#3DDC84', textColor: '#0A1A13' },
-  'Jetpack Compose': { label: 'Jetpack Compose', color: '#4285F4', textColor: '#ffffff' },
-  Prisma: { label: 'Prisma', color: '#2D3748', textColor: '#ffffff' },
-  MySQL: { label: 'MySQL', color: '#005C84', textColor: '#ffffff' },
-  PostgreSQL: { label: 'PostgreSQL', color: '#316192', textColor: '#ffffff' },
-  'SQL Server': { label: 'SQL Server', color: '#CC2927', textColor: '#ffffff' },
-  Docker: { label: 'Docker', color: '#0db7ed', textColor: '#ffffff' },
-  Git: { label: 'Git', color: '#F1502F', textColor: '#ffffff' },
-  Firebase: { label: 'Firebase', color: '#FFCA28', textColor: '#111827' },
-  Redis: { label: 'Redis', color: '#DC382D', textColor: '#ffffff' },
-  MongoDB: { label: 'MongoDB', color: '#47A248', textColor: '#ffffff' },
-  Retrofit: { label: 'Retrofit', color: '#3DDC84', textColor: '#0A1A13' },
-  Room: { label: 'Room', color: '#6DB33F', textColor: '#ffffff' },
-  Hilt: { label: 'Hilt', color: '#34A853', textColor: '#ffffff' },
+  React: { label: 'REACT', color: '20232A', logo: 'react', logoColor: '61DAFB' },
+  TypeScript: { label: 'TYPESCRIPT', color: '2F74C0', logo: 'typescript', logoColor: 'white' },
+  JavaScript: { label: 'JAVASCRIPT', color: 'F7DF1E', logo: 'javascript', logoColor: 'black' },
+  'Tailwind CSS': { label: 'TAILWINDCSS', color: '0F172A', logo: 'tailwindcss', logoColor: '38BDF8' },
+  Bootstrap: { label: 'BOOTSTRAP', color: '7952B3', logo: 'bootstrap', logoColor: 'white' },
+  'Material UI': { label: 'MATERIAL UI', color: '007FFF', logo: 'mui', logoColor: 'white' },
+  'Chakra UI': { label: 'CHAKRA UI', color: '319795', logo: 'chakraui', logoColor: 'white' },
+  Redux: { label: 'REDUX', color: '764ABC', logo: 'redux', logoColor: 'white' },
+  Pinia: { label: 'PINIA', color: 'FFE56C', logo: 'pinia', logoColor: 'black' },
+  GraphQL: { label: 'GRAPHQL', color: 'E10098', logo: 'graphql', logoColor: 'white' },
+  'Apollo GraphQL': { label: 'APOLLO', color: '311C87', logo: 'apollographql', logoColor: 'white' },
+  HTML5: { label: 'HTML5', color: 'E34F26', logo: 'html5', logoColor: 'white' },
+  CSS3: { label: 'CSS3', color: '1572B6', logo: 'css3', logoColor: 'white' },
+  Vite: { label: 'VITE', color: '646CFF', logo: 'vite', logoColor: 'white' },
+  'Next.js': { label: 'NEXT.JS', color: '000000', logo: 'nextdotjs', logoColor: 'white' },
+  Vue: { label: 'VUE', color: '4FC08D', logo: 'vuedotjs', logoColor: 'white' },
+  Nuxt: { label: 'NUXT', color: '00DC82', logo: 'nuxtdotjs', logoColor: 'white' },
+  Angular: { label: 'ANGULAR', color: 'DD0031', logo: 'angular', logoColor: 'white' },
+  Svelte: { label: 'SVELTE', color: 'FF3E00', logo: 'svelte', logoColor: 'white' },
+  PHP: { label: 'PHP', color: '777BB4', logo: 'php', logoColor: 'white' },
+  Laravel: { label: 'LARAVEL', color: 'FF2D20', logo: 'laravel', logoColor: 'white' },
+  CodeIgniter: { label: 'CODEIGNITER', color: 'DD4814', logo: 'codeigniter', logoColor: 'white' },
+  'Node.js': { label: 'NODE.JS', color: '339933', logo: 'nodedotjs', logoColor: 'white' },
+  Express: { label: 'EXPRESS', color: '000000', logo: 'express', logoColor: 'white' },
+  NestJS: { label: 'NESTJS', color: 'E0234E', logo: 'nestjs', logoColor: 'white' },
+  'Spring Boot': { label: 'SPRING BOOT', color: '6DB33F', logo: 'springboot', logoColor: 'white' },
+  Symfony: { label: 'SYMFONY', color: '000000', logo: 'symfony', logoColor: 'white' },
+  Java: { label: 'JAVA', color: '007396', logo: 'openjdk', logoColor: 'white' },
+  Kotlin: { label: 'KOTLIN', color: '7F52FF', logo: 'kotlin', logoColor: 'white' },
+  Python: { label: 'PYTHON', color: '3776AB', logo: 'python', logoColor: 'white' },
+  Django: { label: 'DJANGO', color: '092E20', logo: 'django', logoColor: 'white' },
+  Flask: { label: 'FLASK', color: '000000', logo: 'flask', logoColor: 'white' },
+  FastAPI: { label: 'FASTAPI', color: '009688', logo: 'fastapi', logoColor: 'white' },
+  Go: { label: 'GO', color: '00ADD8', logo: 'go', logoColor: 'white' },
+  Gin: { label: 'GIN', color: '008ECF', logo: 'gin', logoColor: 'white' },
+  Fiber: { label: 'FIBER', color: '00ADEF', logo: 'go', logoColor: 'white' },
+  '.NET': { label: '.NET', color: '512BD4', logo: 'dotnet', logoColor: 'white' },
+  'ASP.NET Core': { label: 'ASP.NET', color: '512BD4', logo: 'dotnet', logoColor: 'white' },
+  Ruby: { label: 'RUBY', color: 'CC342D', logo: 'ruby', logoColor: 'white' },
+  'Ruby on Rails': { label: 'RAILS', color: 'CC0000', logo: 'rubyonrails', logoColor: 'white' },
+  Flutter: { label: 'FLUTTER', color: '02569B', logo: 'flutter', logoColor: 'white' },
+  'React Native': { label: 'REACT NATIVE', color: '20232A', logo: 'react', logoColor: '61DAFB' },
+  Android: { label: 'ANDROID', color: '3DDC84', logo: 'android', logoColor: 'white' },
+  'Jetpack Compose': { label: 'JETPACK COMPOSE', color: '4285F4', logo: 'jetpackcompose', logoColor: 'white' },
+  Expo: { label: 'EXPO', color: '000020', logo: 'expo', logoColor: 'white' },
+  Ionic: { label: 'IONIC', color: '3880FF', logo: 'ionic', logoColor: 'white' },
+  Electron: { label: 'ELECTRON', color: '47848F', logo: 'electron', logoColor: 'white' },
+  Prisma: { label: 'PRISMA', color: '2D3748', logo: 'prisma', logoColor: 'white' },
+  MySQL: { label: 'MYSQL', color: '005C84', logo: 'mysql', logoColor: 'white' },
+  PostgreSQL: { label: 'POSTGRESQL', color: '316192', logo: 'postgresql', logoColor: 'white' },
+  MariaDB: { label: 'MARIADB', color: '003545', logo: 'mariadb', logoColor: 'white' },
+  SQLite: { label: 'SQLITE', color: '003B57', logo: 'sqlite', logoColor: 'white' },
+  'SQL Server': { label: 'SQL SERVER', color: 'CC2927', logo: 'microsoftsqlserver', logoColor: 'white' },
+  Docker: { label: 'DOCKER', color: '0db7ed', logo: 'docker', logoColor: 'white' },
+  Git: { label: 'GIT', color: 'F1502F', logo: 'git', logoColor: 'white' },
+  Kubernetes: { label: 'KUBERNETES', color: '326CE5', logo: 'kubernetes', logoColor: 'white' },
+  Terraform: { label: 'TERRAFORM', color: '844FBA', logo: 'terraform', logoColor: 'white' },
+  Jenkins: { label: 'JENKINS', color: 'D24939', logo: 'jenkins', logoColor: 'white' },
+  'GitHub Actions': { label: 'GITHUB ACTIONS', color: '2088FF', logo: 'githubactions', logoColor: 'white' },
+  'GitLab CI': { label: 'GITLAB CI', color: 'FC6D26', logo: 'gitlab', logoColor: 'white' },
+  Kafka: { label: 'KAFKA', color: '231F20', logo: 'apachekafka', logoColor: 'white' },
+  RabbitMQ: { label: 'RABBITMQ', color: 'FF6600', logo: 'rabbitmq', logoColor: 'white' },
+  Firebase: { label: 'FIREBASE', color: 'FFCA28', logo: 'firebase', logoColor: 'black' },
+  Supabase: { label: 'SUPABASE', color: '3ECF8E', logo: 'supabase', logoColor: 'white' },
+  Redis: { label: 'REDIS', color: 'DC382D', logo: 'redis', logoColor: 'white' },
+  MongoDB: { label: 'MONGODB', color: '47A248', logo: 'mongodb', logoColor: 'white' },
+  Retrofit: { label: 'RETROFIT', color: '3DDC84', logo: 'android', logoColor: 'white' },
+  Room: { label: 'ROOM', color: '6DB33F', logo: 'android', logoColor: 'white' },
+  Hilt: { label: 'HILT', color: '34A853', logo: 'google', logoColor: 'white' },
 };
+
+interface SectionRender {
+  key: SectionKey;
+  title: string;
+  groups: StackGroup[];
+}
+
+interface CardRenderInput {
+  username: string;
+  totalRepositories: number;
+  stackGroups: StackGroup[];
+  options: CardOptions;
+}
 
 function escapeXml(value: string): string {
   return value
@@ -105,38 +147,32 @@ function sanitizeColor(value?: string): string | undefined {
   return HEX_COLOR_REGEX.test(trimmed) ? trimmed : undefined;
 }
 
-function truncate(value: string, maxLength: number): string {
-  return value.length <= maxLength ? value : `${value.slice(0, maxLength - 3)}...`;
-}
-
-function getStackStyle(stack: string): StackStyle {
-  return STACK_STYLES[stack] ?? { ...DEFAULT_STACK_STYLE, label: stack };
-}
-
-function estimateChipWidth(stack: string, count: number): number {
-  const style = getStackStyle(stack);
-  const text = `${style.label.toUpperCase()} (${count})`;
-  const width = 28 + text.length * 7;
-  return Math.min(Math.max(width, 120), 230);
-}
-
-function formatRepoLine(group: StackGroup, maxRepos: number): string {
-  const visible = group.repos.slice(0, maxRepos).map((item) => item.repo.name);
-  const hidden = Math.max(0, group.repos.length - visible.length);
-  const joined = visible.join(', ');
-  const suffix = hidden > 0 ? `, +${hidden} more` : '';
-  return `${group.stack}: ${joined}${suffix}`;
-}
-
 function panelFill(options: CardOptions, theme: CardTheme): string {
   if (options.theme === 'dark' && !options.bgColor) return 'url(#card-bg-dark)';
   return theme.bgColor;
 }
 
-interface SectionRender {
-  key: SectionKey;
-  title: string;
-  groups: StackGroup[];
+function getStackStyle(stack: string): StackStyle {
+  return STACK_STYLES[stack] ?? { ...DEFAULT_STACK_STYLE, label: stack.toUpperCase() };
+}
+
+function buildBadgeUrl(stack: string, count: number): string {
+  const style = getStackStyle(stack);
+  const params = new URLSearchParams({
+    label: '',
+    message: `${style.label} (${count})`,
+    color: style.color,
+    style: 'for-the-badge',
+    logo: style.logo,
+    logoColor: style.logoColor,
+  });
+  return `https://img.shields.io/static/v1?${params.toString()}`;
+}
+
+function estimateBadgeWidth(stack: string, count: number): number {
+  const style = getStackStyle(stack);
+  const textLength = `${style.label} (${count})`.length;
+  return Math.min(Math.max(85 + textLength * 7.2, 125), 260);
 }
 
 function buildSections(stackGroups: StackGroup[]): SectionRender[] {
@@ -148,7 +184,10 @@ function buildSections(stackGroups: StackGroup[]): SectionRender[] {
 
   for (const group of stackGroups) {
     const key = getStackSection(group.stack);
-    const section = key === 'other' || key === 'mobile' || key === 'frontend' || key === 'backend' || key === 'tools' ? key : 'other';
+    const section: SectionKey =
+      key === 'frontend' || key === 'backend' || key === 'tools' || key === 'mobile' || key === 'other'
+        ? key
+        : 'other';
     map.get(section)?.push(group);
   }
 
@@ -211,11 +250,8 @@ function resolveTheme(options: CardOptions): CardTheme {
   };
 }
 
-interface CardRenderInput {
-  username: string;
-  totalRepositories: number;
-  stackGroups: StackGroup[];
-  options: CardOptions;
+function sectionDividerX(title: string): number {
+  return Math.min(646, 42 + title.length * 10 + 26);
 }
 
 export function renderCardSvg({ username, totalRepositories, stackGroups, options }: CardRenderInput): string {
@@ -223,60 +259,46 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
   const theme = resolveTheme(options);
   const limitedStacks = stackGroups.slice(0, options.maxStacks);
   const sections = buildSections(limitedStacks);
-  const maxRepos = Math.min(options.maxReposPerStack, 6);
 
-  const content: string[] = [];
+  const lines: string[] = [];
 
-  content.push(`<text x="28" y="48" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="24" font-weight="700">GitHub Stack Mapping</text>`);
-  content.push(`<text x="28" y="72" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">${escapeXml(username)} | ${totalRepositories} repos | ${limitedStacks.length} stacks</text>`);
+  lines.push(`<text x="24" y="46" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="24" font-weight="700">GitHub Stack Mapping</text>`);
+  lines.push(`<text x="24" y="70" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">${escapeXml(username)} | ${totalRepositories} repos | ${limitedStacks.length} stacks</text>`);
 
   if (sections.length === 0) {
-    content.push(`<text x="28" y="110" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">No stack signals were detected from public repositories.</text>`);
+    lines.push(`<text x="24" y="106" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">No stack signals were detected from public repositories.</text>`);
   }
 
-  let y = 104;
+  let y = 98;
 
   for (const section of sections) {
-    y += 26;
-    content.push(`<rect x="28" y="${y - 15}" width="6" height="20" rx="3" fill="${theme.titleColor}"/>`);
-    content.push(`<text x="40" y="${y}" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="700">${escapeXml(section.title)}</text>`);
-    content.push(`<line x1="155" y1="${y - 6}" x2="672" y2="${y - 6}" stroke="${theme.borderColor}" stroke-width="1"/>`);
+    y += 20;
+    lines.push(`<text x="24" y="${y}" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="700">${escapeXml(section.title)}</text>`);
+    lines.push(`<line x1="${sectionDividerX(section.title)}" y1="${y - 7}" x2="676" y2="${y - 7}" stroke="${theme.borderColor}" stroke-width="1"/>`);
 
-    let chipX = 28;
-    let chipY = y + 10;
+    let badgeX = 24;
+    let badgeY = y + 10;
 
     for (const group of section.groups) {
-      const style = getStackStyle(group.stack);
-      const chipWidth = estimateChipWidth(group.stack, group.repos.length);
-
-      if (chipX + chipWidth > 672) {
-        chipX = 28;
-        chipY += 30;
+      const badgeWidth = estimateBadgeWidth(group.stack, group.repos.length);
+      if (badgeX + badgeWidth > 676) {
+        badgeX = 24;
+        badgeY += 38;
       }
 
-      const chipLabel = `${style.label.toUpperCase()} (${group.repos.length})`;
+      const badgeUrl = buildBadgeUrl(group.stack, group.repos.length);
+      lines.push(`<image x="${badgeX}" y="${badgeY}" width="${badgeWidth}" height="28" preserveAspectRatio="xMinYMin meet" href="${escapeXml(badgeUrl)}"/>`);
 
-      content.push(`<rect x="${chipX}" y="${chipY}" width="${chipWidth}" height="24" rx="6" fill="${style.color}"/>`);
-      content.push(`<text x="${chipX + 10}" y="${chipY + 16}" fill="${style.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11.5" font-weight="700" letter-spacing="0.8">${escapeXml(chipLabel)}</text>`);
-
-      chipX += chipWidth + 8;
+      badgeX += badgeWidth + 6;
     }
 
-    y = chipY + 34;
-
-    for (const group of section.groups) {
-      const line = truncate(formatRepoLine(group, maxRepos), 96);
-      content.push(`<text x="34" y="${y}" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="12.5">- ${escapeXml(line)}</text>`);
-      y += 17;
-    }
-
-    y += 4;
+    y = badgeY + 34;
   }
 
-  y += 8;
-  content.push(`<text x="28" y="${y}" fill="${theme.mutedTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Generated by github-readme-stack-mapping</text>`);
+  y += 6;
+  lines.push(`<text x="24" y="${y}" fill="${theme.mutedTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Generated by github-readme-stack-mapping</text>`);
 
-  const finalHeight = Math.max(230, y + 20);
+  const finalHeight = Math.max(210, y + 18);
   const borderStroke = options.hideBorder ? 'none' : theme.borderColor;
   const borderWidth = options.hideBorder ? 0 : 1;
 
@@ -297,7 +319,7 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
     `<desc id="desc">Embeddable tech-stack SVG summary for GitHub user ${escapeXml(username)}.</desc>`,
     `<rect x="0.5" y="0.5" width="699" height="${finalHeight - 1}" rx="16" fill="${panelFill(options, theme)}" stroke="${borderStroke}" stroke-width="${borderWidth}"/>`,
     '<rect x="18" y="18" width="664" height="1" fill="url(#header-glow)"/>',
-    ...content,
+    ...lines,
     '</svg>',
   ].join('');
 }
@@ -323,3 +345,6 @@ export function renderErrorSvg(message: string, options: CardOptions): string {
     '</svg>',
   ].join('');
 }
+
+
+
