@@ -378,6 +378,7 @@ export function normalizeCardOptions(query: Record<string, string | string[] | u
   const maxStacks = Number.isFinite(maxStacksRaw)
     ? Math.min(Math.max(maxStacksRaw, 1), 40)
     : 25;
+  const showProjects = get('show_projects')?.toLowerCase() === 'true';
 
   return {
     theme,
@@ -388,6 +389,7 @@ export function normalizeCardOptions(query: Record<string, string | string[] | u
     borderColor: sanitizeColor(get('border_color')),
     maxReposPerStack,
     maxStacks,
+    showProjects,
   };
 }
 
@@ -414,6 +416,51 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
 
   const lines: string[] = [];
 
+  const pushBadge = (x: number, yPos: number, maxWidth: number, group: StackGroup): number => {
+    const style = getStackStyle(group.stack);
+    const icon = getSimpleIcon(group.stack);
+    const bg = toHex(style.color);
+    const countText = `(${group.repos.length})`;
+    const textColor = pickTextColor(bg);
+    const iconBg = adjustHexColor(bg, textColor === '#0f172a' ? -40 : 40);
+    const countBg = adjustHexColor(bg, textColor === '#0f172a' ? -28 : 28);
+    const iconTextColor = pickTextColor(iconBg);
+    const countTextColor = pickTextColor(countBg);
+
+    const badgeH = 28;
+    const iconW = 28;
+    const countW = Math.max(42, 18 + countText.length * 7);
+    const desiredWidth = estimateBadgeWidth(group.stack, group.repos.length);
+    const badgeWidth = Math.min(desiredWidth, maxWidth);
+    const countX = x + badgeWidth - countW;
+    const labelW = Math.max(34, countX - (x + iconW));
+    const maxChars = Math.max(4, Math.floor((labelW - 12) / 7));
+    const label = trimLabel(style.label, maxChars);
+    const labelStartX = x + iconW + 8;
+
+    lines.push(`<rect x="${x}" y="${yPos}" width="${badgeWidth}" height="${badgeH}" rx="6" fill="${bg}"/>`);
+    lines.push(`<rect x="${x}" y="${yPos}" width="${iconW}" height="${badgeH}" rx="6" fill="${iconBg}"/>`);
+    lines.push(`<rect x="${countX}" y="${yPos}" width="${countW}" height="${badgeH}" rx="6" fill="${countBg}"/>`);
+
+    if (icon) {
+      const iconSize = 14;
+      const scale = iconSize / 24;
+      const iconX = x + (iconW - iconSize) / 2;
+      const iconY = yPos + (badgeH - iconSize) / 2;
+      const brandFill = toHex(icon.hex);
+      const iconFill = contrastRatio(brandFill, iconBg) >= 2.2 ? brandFill : iconTextColor;
+
+      lines.push(`<g transform="translate(${iconX} ${iconY}) scale(${scale})"><path d="${icon.path}" fill="${iconFill}"/></g>`);
+    } else {
+      lines.push(`<text x="${x + 6}" y="${yPos + 18}" fill="${iconTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10" font-weight="700">${escapeXml(style.fallbackIcon)}</text>`);
+    }
+
+    lines.push(`<text x="${labelStartX}" y="${yPos + 18}" fill="${textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" letter-spacing="0.5">${escapeXml(label)}</text>`);
+    lines.push(`<text x="${countX + countW / 2}" y="${yPos + 18}" fill="${countTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" text-anchor="middle">${countText}</text>`);
+
+    return badgeWidth;
+  };
+
   if (sections.length === 0) {
     lines.push(`<text x="24" y="58" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">No stack signals were detected from public repositories.</text>`);
   }
@@ -425,59 +472,64 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
     lines.push(`<text x="24" y="${y}" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="700">${escapeXml(section.title)}</text>`);
     lines.push(`<line x1="${sectionDividerX(section.title)}" y1="${y - 7}" x2="676" y2="${y - 7}" stroke="${theme.borderColor}" stroke-width="1"/>`);
 
-    let badgeX = 24;
-    let badgeY = y + 10;
+    if (!options.showProjects) {
+      let badgeX = 24;
+      let badgeY = y + 10;
 
-    for (const group of section.groups) {
-      const badgeWidth = estimateBadgeWidth(group.stack, group.repos.length);
-      if (badgeX + badgeWidth > 676) {
-        badgeX = 24;
-        badgeY += 38;
+      for (const group of section.groups) {
+        const desired = estimateBadgeWidth(group.stack, group.repos.length);
+        if (badgeX + desired > 676) {
+          badgeX = 24;
+          badgeY += 38;
+        }
+
+        const usedWidth = pushBadge(badgeX, badgeY, 676 - badgeX, group);
+        badgeX += usedWidth + 6;
       }
 
-      const style = getStackStyle(group.stack);
-      const icon = getSimpleIcon(group.stack);
-      const bg = toHex(style.color);
-      const countText = `(${group.repos.length})`;
-      const textColor = pickTextColor(bg);
-      const iconBg = adjustHexColor(bg, textColor === '#0f172a' ? -40 : 40);
-      const countBg = adjustHexColor(bg, textColor === '#0f172a' ? -28 : 28);
-      const iconTextColor = pickTextColor(iconBg);
-      const countTextColor = pickTextColor(countBg);
-
-      const badgeH = 28;
-      const iconW = 28;
-      const countW = Math.max(42, 18 + countText.length * 7);
-      const countX = badgeX + badgeWidth - countW;
-      const labelW = Math.max(34, countX - (badgeX + iconW));
-      const maxChars = Math.max(4, Math.floor((labelW - 12) / 7));
-      const label = trimLabel(style.label, maxChars);
-      const labelStartX = badgeX + iconW + 8;
-
-      lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${badgeWidth}" height="${badgeH}" rx="6" fill="${bg}"/>`);
-      lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${iconW}" height="${badgeH}" rx="6" fill="${iconBg}"/>`);
-      lines.push(`<rect x="${countX}" y="${badgeY}" width="${countW}" height="${badgeH}" rx="6" fill="${countBg}"/>`);
-
-      if (icon) {
-        const iconSize = 14;
-        const scale = iconSize / 24;
-        const iconX = badgeX + (iconW - iconSize) / 2;
-        const iconY = badgeY + (badgeH - iconSize) / 2;
-        const brandFill = toHex(icon.hex);
-        const iconFill = contrastRatio(brandFill, iconBg) >= 2.2 ? brandFill : iconTextColor;
-
-        lines.push(`<g transform="translate(${iconX} ${iconY}) scale(${scale})"><path d="${icon.path}" fill="${iconFill}"/></g>`);
-      } else {
-        lines.push(`<text x="${badgeX + 6}" y="${badgeY + 18}" fill="${iconTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10" font-weight="700">${escapeXml(style.fallbackIcon)}</text>`);
-      }
-
-      lines.push(`<text x="${labelStartX}" y="${badgeY + 18}" fill="${textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" letter-spacing="0.5">${escapeXml(label)}</text>`);
-      lines.push(`<text x="${countX + countW / 2}" y="${badgeY + 18}" fill="${countTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" text-anchor="middle">${countText}</text>`);
-
-      badgeX += badgeWidth + 6;
+      y = badgeY + 34;
+      continue;
     }
 
-    y = badgeY + 34;
+    const cardWidth = 326;
+    const cardGap = 12;
+    let cardX = 24;
+    let rowY = y + 10;
+    let rowHeight = 0;
+
+    for (const group of section.groups) {
+      if (cardX + cardWidth > 676) {
+        cardX = 24;
+        rowY += rowHeight + 12;
+        rowHeight = 0;
+      }
+
+      const visibleRepos = group.repos.slice(0, options.maxReposPerStack);
+      const hiddenRepos = Math.max(0, group.repos.length - visibleRepos.length);
+      const cardHeight = 44 + (visibleRepos.length * 18) + (hiddenRepos > 0 ? 14 : 0) + 8;
+
+      const cardFill = options.theme === 'dark' ? '#0b1328' : theme.sectionBgColor;
+      lines.push(`<rect x="${cardX}" y="${rowY}" width="${cardWidth}" height="${cardHeight}" rx="10" fill="${cardFill}" stroke="${theme.borderColor}" stroke-width="1"/>`);
+
+      pushBadge(cardX + 8, rowY + 6, cardWidth - 16, group);
+
+      let repoY = rowY + 48;
+      for (const repoAnalysis of visibleRepos) {
+        const repoName = trimLabel(repoAnalysis.repo.name, 30);
+        const repoUrl = escapeXml(repoAnalysis.repo.html_url);
+        lines.push(`<a href="${repoUrl}" target="_blank" rel="noopener noreferrer"><text x="${cardX + 12}" y="${repoY}" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">${escapeXml(repoName)}</text></a>`);
+        repoY += 18;
+      }
+
+      if (hiddenRepos > 0) {
+        lines.push(`<text x="${cardX + 12}" y="${repoY}" fill="${theme.mutedTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10">+${hiddenRepos} more</text>`);
+      }
+
+      rowHeight = Math.max(rowHeight, cardHeight);
+      cardX += cardWidth + cardGap;
+    }
+
+    y = rowY + rowHeight + 8;
   }
 
   y += 6;
@@ -502,7 +554,6 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
     `<title id="title">GitHub Stack Mapping - ${escapeXml(username)}</title>`,
     `<desc id="desc">Embeddable tech-stack SVG summary for GitHub user ${escapeXml(username)} with ${totalRepositories} repositories and ${limitedStacks.length} stacks.</desc>`,
     `<rect x="0.5" y="0.5" width="699" height="${finalHeight - 1}" rx="16" fill="${panelFill(options, theme)}" stroke="${borderStroke}" stroke-width="${borderWidth}"/>`,
-    '<rect x="18" y="18" width="664" height="1" fill="url(#header-glow)"/>',
     ...lines,
     '</svg>',
   ].join('');
@@ -528,5 +579,3 @@ export function renderErrorSvg(message: string, options: CardOptions): string {
     '</svg>',
   ].join('');
 }
-
-

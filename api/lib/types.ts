@@ -76,4 +76,5 @@ export interface CardOptions {
   borderColor?: string;
   maxReposPerStack: number;
   maxStacks: number;
+  showProjects: boolean;
 }
