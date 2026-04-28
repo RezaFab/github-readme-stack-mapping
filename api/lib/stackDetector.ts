@@ -1,6 +1,6 @@
-import type { GitHubRepo, RepoConfigFiles } from './types';
+import type { GitHubRepo, RepoConfigFiles } from './types.js';
 
-const TOPIC_STACK_MAP: Record<string, string> = {
+const TOPIC_TECH_MAP: Record<string, string> = {
   react: 'React',
   vite: 'Vite',
   nextjs: 'Next.js',
@@ -20,22 +20,48 @@ const TOPIC_STACK_MAP: Record<string, string> = {
   flutter: 'Flutter',
   reactnative: 'React Native',
   'react-native': 'React Native',
+  android: 'Android',
+  androidstudio: 'Android',
+  jetpack: 'Jetpack Compose',
+  compose: 'Jetpack Compose',
+  jetpackcompose: 'Jetpack Compose',
+  'jetpack-compose': 'Jetpack Compose',
   spring: 'Spring Boot',
   springboot: 'Spring Boot',
-  java: 'Java',
-  python: 'Python',
   django: 'Django',
   flask: 'Flask',
   fastapi: 'FastAPI',
   prisma: 'Prisma',
   postgresql: 'PostgreSQL',
   mysql: 'MySQL',
+  sqlserver: 'SQL Server',
+  mssql: 'SQL Server',
+  mongodb: 'MongoDB',
+  redis: 'Redis',
   docker: 'Docker',
+  git: 'Git',
+  firebase: 'Firebase',
+  retrofit: 'Retrofit',
+  room: 'Room',
+  hilt: 'Hilt',
+  daggerhilt: 'Hilt',
   tailwindcss: 'Tailwind CSS',
   tailwind: 'Tailwind CSS',
 };
 
-const PACKAGE_DEP_STACK_MAP: Record<string, string> = {
+const TOPIC_LANGUAGE_MAP: Record<string, string> = {
+  typescript: 'TypeScript',
+  javascript: 'JavaScript',
+  java: 'Java',
+  kotlin: 'Kotlin',
+  python: 'Python',
+  php: 'PHP',
+  html: 'HTML',
+  css: 'CSS',
+  dart: 'Dart',
+};
+
+const PACKAGE_DEP_TECH_MAP: Record<string, string> = {
   react: 'React',
   vite: 'Vite',
   next: 'Next.js',
@@ -49,9 +75,18 @@ const PACKAGE_DEP_STACK_MAP: Record<string, string> = {
   prisma: 'Prisma',
   tailwindcss: 'Tailwind CSS',
   'react-native': 'React Native',
+  expo: 'React Native',
   mysql: 'MySQL',
   pg: 'PostgreSQL',
   postgres: 'PostgreSQL',
+  mssql: 'SQL Server',
+  mongodb: 'MongoDB',
+  redis: 'Redis',
+  firebase: 'Firebase',
+};
+
+const PACKAGE_DEP_LANGUAGE_MAP: Record<string, string> = {
+  typescript: 'TypeScript',
 };
 
 function safeJsonParse<T>(raw?: string): T | null {
@@ -66,7 +101,7 @@ function safeJsonParse<T>(raw?: string): T | null {
   }
 }
 
-function addStacksFromPackageJson(stacks: Set<string>, packageJson?: string): void {
+function addFromPackageJson(technologies: Set<string>, languages: Set<string>, packageJson?: string): void {
   const parsed = safeJsonParse<{
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
@@ -84,18 +119,25 @@ function addStacksFromPackageJson(stacks: Set<string>, packageJson?: string): vo
   };
 
   if (Object.keys(deps).length > 0) {
-    stacks.add('Node.js');
+    technologies.add('Node.js');
   }
 
   for (const dep of Object.keys(deps)) {
-    const stack = PACKAGE_DEP_STACK_MAP[dep.toLowerCase()];
-    if (stack) {
-      stacks.add(stack);
+    const key = dep.toLowerCase();
+
+    const tech = PACKAGE_DEP_TECH_MAP[key];
+    if (tech) {
+      technologies.add(tech);
+    }
+
+    const language = PACKAGE_DEP_LANGUAGE_MAP[key];
+    if (language) {
+      languages.add(language);
     }
   }
 }
 
-function addStacksFromComposerJson(stacks: Set<string>, composerJson?: string): void {
+function addFromComposerJson(technologies: Set<string>, languages: Set<string>, composerJson?: string): void {
   const parsed = safeJsonParse<{
     require?: Record<string, string>;
     'require-dev'?: Record<string, string>;
@@ -113,31 +155,21 @@ function addStacksFromComposerJson(stacks: Set<string>, composerJson?: string): 
   for (const dep of Object.keys(deps)) {
     const key = dep.toLowerCase();
 
-    if (key === 'laravel/framework') {
-      stacks.add('Laravel');
-    }
-
-    if (key === 'codeigniter4/framework') {
-      stacks.add('CodeIgniter');
-    }
-
-    if (key.startsWith('symfony/')) {
-      stacks.add('Symfony');
-    }
-
-    if (key === 'php') {
-      stacks.add('PHP');
-    }
+    if (key === 'laravel/framework') technologies.add('Laravel');
+    if (key === 'codeigniter4/framework') technologies.add('CodeIgniter');
+    if (key.startsWith('symfony/')) technologies.add('Symfony');
+    if (key === 'php') languages.add('PHP');
   }
 }
 
-function addStacksFromPubspec(stacks: Set<string>, pubspecYaml?: string): void {
+function addFromPubspec(technologies: Set<string>, languages: Set<string>, pubspecYaml?: string): void {
   if (!pubspecYaml) {
     return;
   }
 
   if (/^\s*flutter\s*:/im.test(pubspecYaml) || /sdk\s*:\s*flutter/im.test(pubspecYaml)) {
-    stacks.add('Flutter');
+    technologies.add('Flutter');
+    languages.add('Dart');
   }
 }
 
@@ -154,8 +186,9 @@ function parseRequirementsPackages(requirementsTxt?: string): string[] {
     .filter(Boolean);
 }
 
-function addStacksFromPythonFiles(
-  stacks: Set<string>,
+function addFromPythonFiles(
+  technologies: Set<string>,
+  languages: Set<string>,
   requirementsTxt?: string,
   pyprojectToml?: string,
 ): void {
@@ -165,66 +198,158 @@ function addStacksFromPythonFiles(
   const hasToken = (needle: string): boolean =>
     requirementPackages.has(needle) || pyproject.includes(needle);
 
-  if (hasToken('django')) {
-    stacks.add('Django');
-  }
-
-  if (hasToken('flask')) {
-    stacks.add('Flask');
-  }
-
-  if (hasToken('fastapi')) {
-    stacks.add('FastAPI');
-  }
+  if (hasToken('django')) technologies.add('Django');
+  if (hasToken('flask')) technologies.add('Flask');
+  if (hasToken('fastapi')) technologies.add('FastAPI');
 
   if (requirementPackages.size > 0 || pyproject.includes('[project]') || pyproject.includes('[tool.poetry]')) {
-    stacks.add('Python');
+    languages.add('Python');
   }
 }
 
-function addStacksFromTopics(stacks: Set<string>, topics: string[]): void {
+function addFromTopics(technologies: Set<string>, languages: Set<string>, topics: string[]): void {
   for (const topic of topics) {
     const normalized = topic.toLowerCase().replace(/[^a-z0-9-]/g, '');
     const compact = normalized.replace(/-/g, '');
 
-    if (TOPIC_STACK_MAP[normalized]) {
-      stacks.add(TOPIC_STACK_MAP[normalized]);
-    }
+    const tech = TOPIC_TECH_MAP[normalized] ?? TOPIC_TECH_MAP[compact];
+    if (tech) technologies.add(tech);
 
-    if (TOPIC_STACK_MAP[compact]) {
-      stacks.add(TOPIC_STACK_MAP[compact]);
-    }
+    const language = TOPIC_LANGUAGE_MAP[normalized] ?? TOPIC_LANGUAGE_MAP[compact];
+    if (language) languages.add(language);
   }
 }
 
-function addStacksFromLanguage(stacks: Set<string>, language: string | null): void {
+function addFromRepoLanguage(languages: Set<string>, language: string | null): void {
   if (!language) {
     return;
   }
 
   const normalized = language.toLowerCase();
 
-  if (normalized === 'java') {
-    stacks.add('Java');
+  if (normalized === 'typescript') languages.add('TypeScript');
+  if (normalized === 'javascript') languages.add('JavaScript');
+  if (normalized === 'java') languages.add('Java');
+  if (normalized === 'kotlin') languages.add('Kotlin');
+  if (normalized === 'python') languages.add('Python');
+  if (normalized === 'php') languages.add('PHP');
+  if (normalized === 'html') languages.add('HTML');
+  if (normalized === 'css') languages.add('CSS');
+  if (normalized === 'dart') languages.add('Dart');
+}
+
+function addFromAndroidFiles(technologies: Set<string>, languages: Set<string>, repo: GitHubRepo, files: RepoConfigFiles): void {
+  const androidCorpus = [
+    files.buildGradle,
+    files.buildGradleKts,
+    files.appBuildGradle,
+    files.appBuildGradleKts,
+    files.settingsGradle,
+    files.settingsGradleKts,
+    files.gradleProperties,
+    files.libsVersionsToml,
+    files.androidManifest,
+  ]
+    .filter((item): item is string => Boolean(item))
+    .join('\n')
+    .toLowerCase();
+
+  if (!androidCorpus) {
+    if (repo.language?.toLowerCase() === 'kotlin') {
+      technologies.add('Android');
+      languages.add('Kotlin');
+    }
+    return;
   }
 
-  if (normalized === 'python') {
-    stacks.add('Python');
+  const hasAndroidPlugin =
+    androidCorpus.includes('com.android.application') ||
+    androidCorpus.includes('com.android.library') ||
+    androidCorpus.includes('com.android.test') ||
+    androidCorpus.includes('androidapplication') ||
+    androidCorpus.includes('androidlibrary');
+
+  const hasAndroidManifest =
+    androidCorpus.includes('<manifest') &&
+    (androidCorpus.includes('xmlns:android') || androidCorpus.includes('android:name'));
+
+  if (hasAndroidPlugin || hasAndroidManifest || androidCorpus.includes('androidx.')) {
+    technologies.add('Android');
   }
 
-  if (normalized === 'php') {
-    stacks.add('PHP');
+  if (
+    repo.language?.toLowerCase() === 'kotlin' ||
+    androidCorpus.includes('kotlin-android') ||
+    androidCorpus.includes('org.jetbrains.kotlin.android')
+  ) {
+    languages.add('Kotlin');
+  }
+
+  if (
+    androidCorpus.includes('androidx.compose') ||
+    (androidCorpus.includes('buildfeatures') && androidCorpus.includes('compose')) ||
+    androidCorpus.includes('compose = true') ||
+    androidCorpus.includes('jetpack compose')
+  ) {
+    technologies.add('Jetpack Compose');
+  }
+
+  if (androidCorpus.includes('com.google.firebase') || androidCorpus.includes('firebase-')) {
+    technologies.add('Firebase');
+  }
+
+  if (androidCorpus.includes('retrofit2') || androidCorpus.includes('com.squareup.retrofit2')) {
+    technologies.add('Retrofit');
+  }
+
+  if (androidCorpus.includes('androidx.room') || androidCorpus.includes('room-runtime')) {
+    technologies.add('Room');
+  }
+
+  if (androidCorpus.includes('com.google.dagger:hilt') || androidCorpus.includes('dagger.hilt')) {
+    technologies.add('Hilt');
   }
 }
 
-function addStacksFromContent(stacks: Set<string>, files: RepoConfigFiles): void {
-  addStacksFromPackageJson(stacks, files.packageJson);
-  addStacksFromComposerJson(stacks, files.composerJson);
-  addStacksFromPubspec(stacks, files.pubspecYaml);
-  addStacksFromPythonFiles(stacks, files.requirementsTxt, files.pyprojectToml);
+function addFromContent(technologies: Set<string>, languages: Set<string>, repo: GitHubRepo, files: RepoConfigFiles): void {
+  addFromPackageJson(technologies, languages, files.packageJson);
+  addFromComposerJson(technologies, languages, files.composerJson);
+  addFromPubspec(technologies, languages, files.pubspecYaml);
+  addFromPythonFiles(technologies, languages, files.requirementsTxt, files.pyprojectToml);
+  addFromAndroidFiles(technologies, languages, repo, files);
 
   if (files.dockerfile) {
-    stacks.add('Docker');
+    technologies.add('Docker');
+  }
+
+  const javaBuildCorpus = [
+    files.pomXml,
+    files.buildGradle,
+    files.buildGradleKts,
+    files.appBuildGradle,
+    files.appBuildGradleKts,
+    files.settingsGradle,
+    files.settingsGradleKts,
+    files.libsVersionsToml,
+  ]
+    .filter((item): item is string => Boolean(item))
+    .join('\n')
+    .toLowerCase();
+
+  if (
+    javaBuildCorpus.includes('org.springframework.boot') ||
+    javaBuildCorpus.includes('spring-boot-starter') ||
+    javaBuildCorpus.includes('id("org.springframework.boot")') ||
+    javaBuildCorpus.includes("id 'org.springframework.boot'")
+  ) {
+    technologies.add('Spring Boot');
+    languages.add('Java');
+  }
+
+  if (javaBuildCorpus.includes('mysql')) technologies.add('MySQL');
+  if (javaBuildCorpus.includes('postgresql')) technologies.add('PostgreSQL');
+  if (javaBuildCorpus.includes('microsoft.sqlserver') || javaBuildCorpus.includes('mssql')) {
+    technologies.add('SQL Server');
   }
 
   const textCorpus = [
@@ -233,30 +358,48 @@ function addStacksFromContent(stacks: Set<string>, files: RepoConfigFiles): void
     files.pubspecYaml,
     files.requirementsTxt,
     files.pyprojectToml,
+    files.pomXml,
+    files.buildGradle,
+    files.buildGradleKts,
+    files.appBuildGradle,
+    files.appBuildGradleKts,
+    files.settingsGradle,
+    files.settingsGradleKts,
+    files.gradleProperties,
+    files.libsVersionsToml,
+    files.androidManifest,
   ]
     .filter((item): item is string => Boolean(item))
     .join('\n')
     .toLowerCase();
 
-  if (textCorpus.includes('spring-boot')) {
-    stacks.add('Spring Boot');
-  }
-
-  if (textCorpus.includes('postgresql')) {
-    stacks.add('PostgreSQL');
-  }
-
-  if (textCorpus.includes('mysql')) {
-    stacks.add('MySQL');
-  }
+  if (textCorpus.includes('spring-boot')) technologies.add('Spring Boot');
+  if (textCorpus.includes('postgresql')) technologies.add('PostgreSQL');
+  if (textCorpus.includes('mysql')) technologies.add('MySQL');
+  if (textCorpus.includes('sqlserver') || textCorpus.includes('mssql')) technologies.add('SQL Server');
+  if (textCorpus.includes('mongodb')) technologies.add('MongoDB');
+  if (textCorpus.includes('redis')) technologies.add('Redis');
+  if (textCorpus.includes('firebase')) technologies.add('Firebase');
+  if (textCorpus.includes('retrofit')) technologies.add('Retrofit');
+  if (textCorpus.includes('androidx.room') || textCorpus.includes('room-runtime')) technologies.add('Room');
+  if (textCorpus.includes('hilt')) technologies.add('Hilt');
+  if (textCorpus.includes('androidx.') || textCorpus.includes('com.android.')) technologies.add('Android');
+  if (textCorpus.includes('git')) technologies.add('Git');
 }
 
-export function detectStacks(repo: GitHubRepo, files: RepoConfigFiles): string[] {
-  const stacks = new Set<string>();
+export function detectStacks(
+  repo: GitHubRepo,
+  files: RepoConfigFiles,
+): { technologies: string[]; languages: string[] } {
+  const technologies = new Set<string>();
+  const languages = new Set<string>();
 
-  addStacksFromTopics(stacks, repo.topics);
-  addStacksFromContent(stacks, files);
-  addStacksFromLanguage(stacks, repo.language);
+  addFromTopics(technologies, languages, repo.topics);
+  addFromContent(technologies, languages, repo, files);
+  addFromRepoLanguage(languages, repo.language);
 
-  return [...stacks].sort((a, b) => a.localeCompare(b));
+  return {
+    technologies: [...technologies].sort((a, b) => a.localeCompare(b)),
+    languages: [...languages].sort((a, b) => a.localeCompare(b)),
+  };
 }

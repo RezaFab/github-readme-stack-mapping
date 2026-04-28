@@ -11,6 +11,8 @@ export interface ApiResponse {
   json: (body: unknown) => void;
 }
 
+export type DetectionMode = 'techstack' | 'languages' | 'all';
+
 export interface GitHubRepo {
   name: string;
   description: string | null;
@@ -33,11 +35,22 @@ export interface RepoConfigFiles {
   requirementsTxt?: string;
   pyprojectToml?: string;
   dockerfile?: string;
+  pomXml?: string;
+  buildGradle?: string;
+  buildGradleKts?: string;
+  appBuildGradle?: string;
+  appBuildGradleKts?: string;
+  settingsGradle?: string;
+  settingsGradleKts?: string;
+  gradleProperties?: string;
+  libsVersionsToml?: string;
+  androidManifest?: string;
 }
 
 export interface RepoStackAnalysis {
   repo: GitHubRepo;
-  stacks: string[];
+  technologies: string[];
+  languages: string[];
 }
 
 export interface StackGroup {

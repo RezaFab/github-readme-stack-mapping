@@ -1,10 +1,12 @@
-import { detectStacks } from './stackDetector';
-import { fetchPublicRepositories, fetchRepoConfigFiles } from './github';
-import type { GitHubRepo, RepoStackAnalysis, StackGroup } from './types';
+import { detectStacks } from './stackDetector.js';
+import { fetchPublicRepositories, fetchRepoConfigFiles } from './github.js';
+import type { DetectionMode, GitHubRepo, RepoStackAnalysis, StackGroup } from './types.js';
 
 interface BuildStackMappingResult {
   repositories: GitHubRepo[];
   repoAnalyses: RepoStackAnalysis[];
+  technologyGroups: StackGroup[];
+  languageGroups: StackGroup[];
   stackGroups: StackGroup[];
 }
 
@@ -35,16 +37,19 @@ async function mapWithConcurrency<TInput, TOutput>(
   return results;
 }
 
-function groupByStack(repoAnalyses: RepoStackAnalysis[]): StackGroup[] {
+function groupByEntries(
+  repoAnalyses: RepoStackAnalysis[],
+  getEntries: (analysis: RepoStackAnalysis) => string[],
+): StackGroup[] {
   const grouped = new Map<string, RepoStackAnalysis[]>();
 
   for (const analysis of repoAnalyses) {
-    for (const stack of analysis.stacks) {
-      const existing = grouped.get(stack);
+    for (const entry of getEntries(analysis)) {
+      const existing = grouped.get(entry);
       if (existing) {
         existing.push(analysis);
       } else {
-        grouped.set(stack, [analysis]);
+        grouped.set(entry, [analysis]);
       }
     }
   }
@@ -63,24 +68,71 @@ function groupByStack(repoAnalyses: RepoStackAnalysis[]): StackGroup[] {
     });
 }
 
-export async function buildStackMapping(username: string, token?: string): Promise<BuildStackMappingResult> {
+export function selectStackGroupsByMode(
+  mode: DetectionMode,
+  technologyGroups: StackGroup[],
+  languageGroups: StackGroup[],
+): StackGroup[] {
+  if (mode === 'languages') {
+    return languageGroups;
+  }
+
+  if (mode === 'all') {
+    const merged = new Map<string, StackGroup>();
+
+    for (const group of [...technologyGroups, ...languageGroups]) {
+      const existing = merged.get(group.stack);
+      if (!existing) {
+        merged.set(group.stack, group);
+        continue;
+      }
+
+      const repoMap = new Map<string, RepoStackAnalysis>();
+      for (const repoAnalysis of [...existing.repos, ...group.repos]) {
+        repoMap.set(repoAnalysis.repo.html_url, repoAnalysis);
+      }
+
+      existing.repos = [...repoMap.values()].sort((a, b) => b.repo.stargazers_count - a.repo.stargazers_count);
+    }
+
+    return [...merged.values()].sort((a, b) => {
+      if (b.repos.length !== a.repos.length) {
+        return b.repos.length - a.repos.length;
+      }
+      return a.stack.localeCompare(b.stack);
+    });
+  }
+
+  return technologyGroups;
+}
+
+export async function buildStackMapping(
+  username: string,
+  token?: string,
+  mode: DetectionMode = 'techstack',
+): Promise<BuildStackMappingResult> {
   const repositories = await fetchPublicRepositories(username, token);
 
   const repoAnalyses = await mapWithConcurrency(repositories, 4, async (repo) => {
     const files = await fetchRepoConfigFiles(repo, token);
-    const stacks = detectStacks(repo, files);
+    const detected = detectStacks(repo, files);
 
     return {
       repo,
-      stacks,
+      technologies: detected.technologies,
+      languages: detected.languages,
     };
   });
 
-  const stackGroups = groupByStack(repoAnalyses);
+  const technologyGroups = groupByEntries(repoAnalyses, (analysis) => analysis.technologies);
+  const languageGroups = groupByEntries(repoAnalyses, (analysis) => analysis.languages);
+  const stackGroups = selectStackGroupsByMode(mode, technologyGroups, languageGroups);
 
   return {
     repositories,
     repoAnalyses,
+    technologyGroups,
+    languageGroups,
     stackGroups,
   };
 }

@@ -1,4 +1,13 @@
-import type { GitHubRepo, RepoConfigFiles } from './types';
+import type { GitHubRepo, RepoConfigFiles } from './types.js';
+
+declare const Buffer: {
+  from: (
+    input: string,
+    encoding: 'base64',
+  ) => {
+    toString: (encoding: 'utf8') => string;
+  };
+};
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const GITHUB_API_VERSION = '2022-11-28';
@@ -9,6 +18,18 @@ const REPO_CONTENT_PATHS = {
   requirementsTxt: 'requirements.txt',
   pyprojectToml: 'pyproject.toml',
   dockerfile: 'Dockerfile',
+  pomXml: 'pom.xml',
+  buildGradle: 'build.gradle',
+  buildGradleKts: 'build.gradle.kts',
+  appBuildGradle: 'app/build.gradle',
+  appBuildGradleKts: 'app/build.gradle.kts',
+  settingsGradle: 'settings.gradle',
+  settingsGradleKts: 'settings.gradle.kts',
+  gradleProperties: 'gradle.properties',
+  libsVersionsToml: 'gradle/libs.versions.toml',
+  androidManifestRoot: 'AndroidManifest.xml',
+  androidManifestApp: 'app/src/main/AndroidManifest.xml',
+  androidManifestSrc: 'src/main/AndroidManifest.xml',
 } as const;
 
 interface GitHubApiError extends Error {
@@ -25,7 +46,7 @@ function getGitHubHeaders(token?: string): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json, application/vnd.github.mercy-preview+json',
     'X-GitHub-Api-Version': GITHUB_API_VERSION,
-    'User-Agent': 'github-stack-mapping',
+    'User-Agent': 'github-readme-stack-mapping',
   };
 
   if (token) {
@@ -146,17 +167,69 @@ async function fetchRepoFile(
   return undefined;
 }
 
+async function fetchFirstAvailableRepoFile(
+  owner: string,
+  repoName: string,
+  paths: string[],
+  token?: string,
+): Promise<string | undefined> {
+  for (const path of paths) {
+    const content = await fetchRepoFile(owner, repoName, path, token);
+    if (content) {
+      return content;
+    }
+  }
+
+  return undefined;
+}
+
 export async function fetchRepoConfigFiles(repo: GitHubRepo, token?: string): Promise<RepoConfigFiles> {
   const owner = repo.owner.login;
   const repoName = repo.name;
 
-  const [packageJson, composerJson, pubspecYaml, requirementsTxt, pyprojectToml, dockerfile] = await Promise.all([
+  const [
+    packageJson,
+    composerJson,
+    pubspecYaml,
+    requirementsTxt,
+    pyprojectToml,
+    dockerfile,
+    pomXml,
+    buildGradle,
+    buildGradleKts,
+    appBuildGradle,
+    appBuildGradleKts,
+    settingsGradle,
+    settingsGradleKts,
+    gradleProperties,
+    libsVersionsToml,
+    androidManifest,
+  ] = await Promise.all([
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.packageJson, token),
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.composerJson, token),
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.pubspecYaml, token),
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.requirementsTxt, token),
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.pyprojectToml, token),
     fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.dockerfile, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.pomXml, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.buildGradle, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.buildGradleKts, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.appBuildGradle, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.appBuildGradleKts, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.settingsGradle, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.settingsGradleKts, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.gradleProperties, token),
+    fetchRepoFile(owner, repoName, REPO_CONTENT_PATHS.libsVersionsToml, token),
+    fetchFirstAvailableRepoFile(
+      owner,
+      repoName,
+      [
+        REPO_CONTENT_PATHS.androidManifestApp,
+        REPO_CONTENT_PATHS.androidManifestSrc,
+        REPO_CONTENT_PATHS.androidManifestRoot,
+      ],
+      token,
+    ),
   ]);
 
   return {
@@ -166,6 +239,16 @@ export async function fetchRepoConfigFiles(repo: GitHubRepo, token?: string): Pr
     requirementsTxt,
     pyprojectToml,
     dockerfile,
+    pomXml,
+    buildGradle,
+    buildGradleKts,
+    appBuildGradle,
+    appBuildGradleKts,
+    settingsGradle,
+    settingsGradleKts,
+    gradleProperties,
+    libsVersionsToml,
+    androidManifest,
   };
 }
 

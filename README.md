@@ -1,54 +1,113 @@
-# GitHub Stack Mapping
+<p align="center">
+  <img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark" alt="GitHub Readme Stack Mapping" />
+</p>
 
-GitHub Stack Mapping generates an embeddable SVG card from a GitHub user's public repositories, grouped by detected tech stack.
+<h1 align="center">GitHub Readme Stack Mapping</h1>
 
-## Main Endpoint
+<p align="center">
+  Generate an embeddable GitHub README SVG card from your public repositories.
+</p>
+
+<p align="center">
+  <a href="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark">Demo</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#api-reference">API Reference</a> ·
+  <a href="#local-development">Local Dev</a> ·
+  <a href="#deploy-to-vercel">Deploy</a>
+</p>
+
+## Features
+
+- README-ready SVG output from `/api/card`
+- Detection mode split: `techstack`, `languages`, `all`
+- Section filter: `frontend`, `backend`, `tools`, `mobile`, `other`, `all`
+- Theme support: `dark` and `light`
+- Official shield-style logos and per-technology repo list
+- Optional JSON debug endpoint at `/api/projects`
+
+## Quick Start
+
+Add this to your README:
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=YOUR_GITHUB_USERNAME)
+```
+
+## API Reference
+
+### Main Card Endpoint
 
 `GET /api/card?username=<github_username>`
 
 Example:
 
-```md
-![GitHub Stack Mapping](https://github-stack-mapping.vercel.app/api/card?username=RezaFab)
+```txt
+https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab
 ```
 
-## Query Parameters
-
-- `username` (required): GitHub username
-- `theme`: `light` or `dark` (default `light`)
-- `hide_border`: `true` or `false` (default `false`)
-- `title_color`: hex color (for example `#24292f`)
-- `text_color`: hex color
-- `bg_color`: hex color
-- `border_color`: hex color
-- `max_repos_per_stack`: number, range `1-10` (default `4`)
-- `max_stacks`: number, range `1-25` (default `10`)
-
-Example with options:
-
-```md
-![GitHub Stack Mapping](https://github-stack-mapping.vercel.app/api/card?username=RezaFab&theme=dark&max_stacks=8)
-```
-
-## Optional Debug Endpoint
+### Optional Debug Endpoint
 
 `GET /api/projects?username=<github_username>`
 
-This endpoint returns JSON so you can inspect detected stacks and grouped repositories.
+Example:
 
-## Stack Detection
+```txt
+https://github-readme-stack-mapping.vercel.app/api/projects?username=RezaFab&mode=all&section=all
+```
 
-The API inspects each public repository using:
+### Query Parameters
 
-- Repository language and topics
-- `package.json`
-- `composer.json`
-- `pubspec.yaml`
-- `requirements.txt`
-- `pyproject.toml`
-- `Dockerfile`
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `username` | string | required | GitHub username |
+| `mode` | `techstack` \| `languages` \| `all` | `techstack` | Group source (`techstack` excludes language-only stacks) |
+| `section` | `all` \| `frontend` \| `backend` \| `tools` \| `mobile` \| `other` | `all` | Filter stacks by section |
+| `theme` | `dark` \| `light` | `dark` | Card theme |
+| `hide_border` | boolean | `false` | Hide outer border |
+| `title_color` | hex color | auto | Override title color |
+| `text_color` | hex color | auto | Override body text color |
+| `bg_color` | hex color | auto | Override background color |
+| `border_color` | hex color | auto | Override border color |
+| `max_repos_per_stack` | number `1-10` | `5` | Max repos shown per stack |
+| `max_stacks` | number `1-40` | `25` | Max stacks shown |
 
-Supported stacks include React, Vite, Next.js, Vue, Nuxt, Angular, Svelte, Node.js, Express, NestJS, Laravel, CodeIgniter, Symfony, Flutter, React Native, Spring Boot, Java, Python, Django, Flask, FastAPI, Prisma, PostgreSQL, MySQL, Docker, and Tailwind CSS.
+## Usage Examples
+
+### Default Tech Stack Card
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark)
+```
+
+### Light Theme
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=light)
+```
+
+### Frontend Only
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=frontend)
+```
+
+### Backend Only
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=backend)
+```
+
+### Tools / Database Only
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools)
+```
+
+### Mobile Only (Android/Flutter/React Native)
+
+```md
+![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=mobile)
+```
 
 ## Local Development
 
@@ -58,25 +117,42 @@ Supported stacks include React, Vite, Next.js, Vue, Nuxt, Angular, Svelte, Node.
 npm install
 ```
 
-2. Run the frontend locally:
+2. Add `.env.local`:
+
+```env
+GITHUB_TOKEN=your_github_token_here
+```
+
+3. Run frontend (Vite):
 
 ```bash
 npm run dev
 ```
 
-3. Run Vercel API routes locally:
+4. Run API routes (Vercel runtime):
 
 ```bash
-npx vercel dev
+npx vercel dev --listen 3000
 ```
+
+5. Open:
+
+```txt
+http://localhost:5173
+```
+
+The frontend preview should call `http://localhost:3000/api/card?...` in local dev.
 
 ## Deploy to Vercel
 
-1. Import this repository into Vercel.
-2. Set the environment variable `GITHUB_TOKEN` in Vercel Project Settings.
+1. Import this repository to Vercel.
+2. Set environment variable `GITHUB_TOKEN` in Project Settings.
 3. Deploy.
 
-`GITHUB_TOKEN` must stay server-side. Do not use `VITE_GITHUB_TOKEN` for this project.
+Security notes:
+
+- Keep token server-side only.
+- Do not expose token as `VITE_GITHUB_TOKEN`.
 
 ## Build Check
 
@@ -84,4 +160,6 @@ npx vercel dev
 npm run build
 ```
 
-The TypeScript build includes both the React app and `api/**/*.ts` server files.
+## License
+
+MIT
