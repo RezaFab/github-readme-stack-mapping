@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark" alt="GitHub Readme Stack Mapping" />
+  <img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=all&theme=dark&hide_border=false&title_color=%238ec5ff&text_color=%23cfe8ff&bg_color=%23070b16&border_color=%23243049&show_projects=false&max_repos_per_stack=5&max_stacks=30" alt="GitHub Readme Stack Mapping" />
 </p>
 
 <h1 align="center">GitHub Readme Stack Mapping</h1>
@@ -79,47 +79,58 @@ https://github-readme-stack-mapping.vercel.app/api/projects?username=RezaFab&mod
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark" alt="GitHub Readme Stack Mapping" />
+
 
 ### Light Theme
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=light)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=light" alt="GitHub Readme Stack Mapping" />
 
 ### Frontend Only
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=frontend)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=frontend" alt="GitHub Readme Stack Mapping" />
 
 ### Backend Only
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=backend)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=backend" alt="GitHub Readme Stack Mapping" />
 
 ### Tools / Database Only
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools" alt="GitHub Readme Stack Mapping" />
+
 ### Mobile Only (Android/Flutter/React Native)
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=mobile)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=mobile" alt="GitHub Readme Stack Mapping" />
 
 ### Show Projects (With Links)
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&show_projects=true&max_repos_per_stack=5)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&show_projects=true&max_repos_per_stack=5" alt="GitHub Readme Stack Mapping" />
 
 ### All Option Example
 
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=backend&theme=dark&hide_border=false&title_color=%238ec5ff&text_color=%23cfe8ff&bg_color=%23070b16&border_color=%23243049&show_projects=true&max_repos_per_stack=5&max_stacks=25)
 ```
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=backend&theme=dark&hide_border=false&title_color=%238ec5ff&text_color=%23cfe8ff&bg_color=%23070b16&border_color=%23243049&show_projects=true&max_repos_per_stack=5&max_stacks=25" alt="GitHub Readme Stack Mapping" />
+
 
 ## Local Development
 
