@@ -81,14 +81,6 @@ https://github-readme-stack-mapping.vercel.app/api/projects?username=RezaFab&mod
 ```
 <img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=dark" alt="GitHub Readme Stack Mapping" />
 
-
-### Light Theme
-
-```md
-![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=light)
-```
-<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&theme=light" alt="GitHub Readme Stack Mapping" />
-
 ### Frontend Only
 
 ```md
@@ -108,7 +100,7 @@ https://github-readme-stack-mapping.vercel.app/api/projects?username=RezaFab&mod
 ```md
 ![GitHub Stack Mapping](https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools)
 ```
-<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools" alt="GitHub Readme Stack Mapping" />
+<img src="https://github-readme-stack-mapping.vercel.app/api/card?username=RezaFab&mode=techstack&section=tools&theme=dark&hide_border=false&title_color=%238ec5ff&text_color=%23cfe8ff&bg_color=%23070b16&border_color=%23243049&show_projects=false&max_repos_per_stack=5&max_stacks=25" alt="GitHub Readme Stack Mapping" />
 
 ### Mobile Only (Android/Flutter/React Native)
 
