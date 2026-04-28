@@ -199,16 +199,19 @@ function getStackStyle(stack: string): StackStyle {
   };
 }
 
-function trimLabel(label: string): string {
-  return label.length <= 16 ? label : `${label.slice(0, 13)}...`;
+function trimLabel(label: string, maxChars = 16): string {
+  return label.length <= maxChars ? label : `${label.slice(0, Math.max(1, maxChars - 3))}...`;
 }
 
 function estimateBadgeWidth(stack: string, count: number): number {
   const style = getStackStyle(stack);
-  const label = trimLabel(style.label);
-  const countText = `(${count})`;
-  const width = 58 + label.length * 7.2 + countText.length * 6.8;
-  return Math.min(Math.max(width, 128), 290);
+  const label = trimLabel(style.label, 16);
+  const iconW = 28;
+  const countChars = `(${count})`.length;
+  const countW = Math.max(42, 18 + countChars * 7);
+  const labelW = Math.min(Math.max(56, label.length * 7 + 16), 165);
+  const width = iconW + labelW + countW;
+  return Math.min(Math.max(width, 124), 240);
 }
 
 function buildSections(stackGroups: StackGroup[]): SectionRender[] {
@@ -321,27 +324,29 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
 
       const style = getStackStyle(group.stack);
       const bg = toHex(style.color);
-      const label = trimLabel(style.label);
       const countText = `(${group.repos.length})`;
       const textColor = pickTextColor(bg);
       const iconBg = adjustHexColor(bg, textColor === '#0f172a' ? -40 : 40);
-      const countBg = adjustHexColor(bg, textColor === '#0f172a' ? -24 : 24);
+      const countBg = adjustHexColor(bg, textColor === '#0f172a' ? -28 : 28);
       const iconTextColor = pickTextColor(iconBg);
       const countTextColor = pickTextColor(countBg);
 
       const badgeH = 28;
-      const iconW = 30;
-      const countW = Math.max(44, 24 + countText.length * 7);
-      const labelStartX = badgeX + iconW + 8;
+      const iconW = 28;
+      const countW = Math.max(42, 18 + countText.length * 7);
       const countX = badgeX + badgeWidth - countW;
+      const labelW = Math.max(34, countX - (badgeX + iconW));
+      const maxChars = Math.max(4, Math.floor((labelW - 12) / 7));
+      const label = trimLabel(style.label, maxChars);
+      const labelStartX = badgeX + iconW + 8;
 
       lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${badgeWidth}" height="${badgeH}" rx="6" fill="${bg}"/>`);
       lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${iconW}" height="${badgeH}" rx="6" fill="${iconBg}"/>`);
       lines.push(`<rect x="${countX}" y="${badgeY}" width="${countW}" height="${badgeH}" rx="6" fill="${countBg}"/>`);
 
-      lines.push(`<text x="${badgeX + 7}" y="${badgeY + 18}" fill="${iconTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10" font-weight="700">${escapeXml(style.icon ?? 'S')}</text>`);
-      lines.push(`<text x="${labelStartX}" y="${badgeY + 18}" fill="${textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" letter-spacing="0.9">${escapeXml(label)}</text>`);
-      lines.push(`<text x="${countX + 10}" y="${badgeY + 18}" fill="${countTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700">${countText}</text>`);
+      lines.push(`<text x="${badgeX + 6}" y="${badgeY + 18}" fill="${iconTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10" font-weight="700">${escapeXml(style.icon ?? 'S')}</text>`);
+      lines.push(`<text x="${labelStartX}" y="${badgeY + 18}" fill="${textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" letter-spacing="0.5">${escapeXml(label)}</text>`);
+      lines.push(`<text x="${countX + countW / 2}" y="${badgeY + 18}" fill="${countTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" text-anchor="middle">${countText}</text>`);
 
       badgeX += badgeWidth + 6;
     }
