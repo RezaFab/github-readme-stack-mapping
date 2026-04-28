@@ -257,6 +257,27 @@ function pickTextColor(bgHex: string): string {
   return brightness > 145 ? '#0f172a' : '#f8fafc';
 }
 
+function relativeLuminance(hex: string): number {
+  const raw = normalizeHex(hex);
+  const toChannel = (start: number): number => {
+    const srgb = Number.parseInt(raw.slice(start, start + 2), 16) / 255;
+    return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+  };
+
+  const r = toChannel(0);
+  const g = toChannel(2);
+  const b = toChannel(4);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrastRatio(colorA: string, colorB: string): number {
+  const l1 = relativeLuminance(colorA);
+  const l2 = relativeLuminance(colorB);
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 function fallbackIcon(label: string): string {
   const tokens = label.split(/[^A-Za-z0-9]+/).filter(Boolean);
   if (tokens.length === 0) return 'S';
@@ -442,7 +463,8 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
         const scale = iconSize / 24;
         const iconX = badgeX + (iconW - iconSize) / 2;
         const iconY = badgeY + (badgeH - iconSize) / 2;
-        const iconFill = toHex(icon.hex);
+        const brandFill = toHex(icon.hex);
+        const iconFill = contrastRatio(brandFill, iconBg) >= 2.2 ? brandFill : iconTextColor;
 
         lines.push(`<g transform="translate(${iconX} ${iconY}) scale(${scale})"><path d="${icon.path}" fill="${iconFill}"/></g>`);
       } else {
@@ -506,3 +528,5 @@ export function renderErrorSvg(message: string, options: CardOptions): string {
     '</svg>',
   ].join('');
 }
+
+
