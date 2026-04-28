@@ -466,8 +466,10 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
   }
 
   let y = 16;
+  const sectionGap = 24;
 
-  for (const section of sections) {
+  for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex += 1) {
+    const section = sections[sectionIndex];
     y += 20;
     lines.push(`<text x="24" y="${y}" fill="${theme.titleColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="700">${escapeXml(section.title)}</text>`);
     lines.push(`<line x1="${sectionDividerX(section.title)}" y1="${y - 7}" x2="676" y2="${y - 7}" stroke="${theme.borderColor}" stroke-width="1"/>`);
@@ -488,6 +490,9 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
       }
 
       y = badgeY + 34;
+      if (sectionIndex < sections.length - 1) {
+        y += sectionGap;
+      }
       continue;
     }
 
@@ -530,6 +535,9 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
     }
 
     y = rowY + rowHeight + 8;
+    if (sectionIndex < sections.length - 1) {
+      y += sectionGap;
+    }
   }
 
   y += 6;
