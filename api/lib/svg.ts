@@ -36,87 +36,84 @@ const SECTION_TITLES: Record<SectionKey, string> = {
 interface StackStyle {
   label: string;
   color: string;
-  logo: string;
-  logoColor: string;
+  icon?: string;
 }
 
 const DEFAULT_STACK_STYLE: StackStyle = {
-  label: 'Stack',
+  label: 'STACK',
   color: '334155',
-  logo: 'github',
-  logoColor: 'white',
 };
 
 const STACK_STYLES: Record<string, StackStyle> = {
-  React: { label: 'REACT', color: '20232A', logo: 'react', logoColor: '61DAFB' },
-  TypeScript: { label: 'TYPESCRIPT', color: '2F74C0', logo: 'typescript', logoColor: 'white' },
-  JavaScript: { label: 'JAVASCRIPT', color: 'F7DF1E', logo: 'javascript', logoColor: 'black' },
-  'Tailwind CSS': { label: 'TAILWINDCSS', color: '0F172A', logo: 'tailwindcss', logoColor: '38BDF8' },
-  Bootstrap: { label: 'BOOTSTRAP', color: '7952B3', logo: 'bootstrap', logoColor: 'white' },
-  'Material UI': { label: 'MATERIAL UI', color: '007FFF', logo: 'mui', logoColor: 'white' },
-  'Chakra UI': { label: 'CHAKRA UI', color: '319795', logo: 'chakraui', logoColor: 'white' },
-  Redux: { label: 'REDUX', color: '764ABC', logo: 'redux', logoColor: 'white' },
-  Pinia: { label: 'PINIA', color: 'FFE56C', logo: 'pinia', logoColor: 'black' },
-  GraphQL: { label: 'GRAPHQL', color: 'E10098', logo: 'graphql', logoColor: 'white' },
-  'Apollo GraphQL': { label: 'APOLLO', color: '311C87', logo: 'apollographql', logoColor: 'white' },
-  HTML5: { label: 'HTML5', color: 'E34F26', logo: 'html5', logoColor: 'white' },
-  CSS3: { label: 'CSS3', color: '1572B6', logo: 'css3', logoColor: 'white' },
-  Vite: { label: 'VITE', color: '646CFF', logo: 'vite', logoColor: 'white' },
-  'Next.js': { label: 'NEXT.JS', color: '000000', logo: 'nextdotjs', logoColor: 'white' },
-  Vue: { label: 'VUE', color: '4FC08D', logo: 'vuedotjs', logoColor: 'white' },
-  Nuxt: { label: 'NUXT', color: '00DC82', logo: 'nuxtdotjs', logoColor: 'white' },
-  Angular: { label: 'ANGULAR', color: 'DD0031', logo: 'angular', logoColor: 'white' },
-  Svelte: { label: 'SVELTE', color: 'FF3E00', logo: 'svelte', logoColor: 'white' },
-  PHP: { label: 'PHP', color: '777BB4', logo: 'php', logoColor: 'white' },
-  Laravel: { label: 'LARAVEL', color: 'FF2D20', logo: 'laravel', logoColor: 'white' },
-  CodeIgniter: { label: 'CODEIGNITER', color: 'DD4814', logo: 'codeigniter', logoColor: 'white' },
-  'Node.js': { label: 'NODE.JS', color: '339933', logo: 'nodedotjs', logoColor: 'white' },
-  Express: { label: 'EXPRESS', color: '000000', logo: 'express', logoColor: 'white' },
-  NestJS: { label: 'NESTJS', color: 'E0234E', logo: 'nestjs', logoColor: 'white' },
-  'Spring Boot': { label: 'SPRING BOOT', color: '6DB33F', logo: 'springboot', logoColor: 'white' },
-  Symfony: { label: 'SYMFONY', color: '000000', logo: 'symfony', logoColor: 'white' },
-  Java: { label: 'JAVA', color: '007396', logo: 'openjdk', logoColor: 'white' },
-  Kotlin: { label: 'KOTLIN', color: '7F52FF', logo: 'kotlin', logoColor: 'white' },
-  Python: { label: 'PYTHON', color: '3776AB', logo: 'python', logoColor: 'white' },
-  Django: { label: 'DJANGO', color: '092E20', logo: 'django', logoColor: 'white' },
-  Flask: { label: 'FLASK', color: '000000', logo: 'flask', logoColor: 'white' },
-  FastAPI: { label: 'FASTAPI', color: '009688', logo: 'fastapi', logoColor: 'white' },
-  Go: { label: 'GO', color: '00ADD8', logo: 'go', logoColor: 'white' },
-  Gin: { label: 'GIN', color: '008ECF', logo: 'gin', logoColor: 'white' },
-  Fiber: { label: 'FIBER', color: '00ADEF', logo: 'go', logoColor: 'white' },
-  '.NET': { label: '.NET', color: '512BD4', logo: 'dotnet', logoColor: 'white' },
-  'ASP.NET Core': { label: 'ASP.NET', color: '512BD4', logo: 'dotnet', logoColor: 'white' },
-  Ruby: { label: 'RUBY', color: 'CC342D', logo: 'ruby', logoColor: 'white' },
-  'Ruby on Rails': { label: 'RAILS', color: 'CC0000', logo: 'rubyonrails', logoColor: 'white' },
-  Flutter: { label: 'FLUTTER', color: '02569B', logo: 'flutter', logoColor: 'white' },
-  'React Native': { label: 'REACT NATIVE', color: '20232A', logo: 'react', logoColor: '61DAFB' },
-  Android: { label: 'ANDROID', color: '3DDC84', logo: 'android', logoColor: 'white' },
-  'Jetpack Compose': { label: 'JETPACK COMPOSE', color: '4285F4', logo: 'jetpackcompose', logoColor: 'white' },
-  Expo: { label: 'EXPO', color: '000020', logo: 'expo', logoColor: 'white' },
-  Ionic: { label: 'IONIC', color: '3880FF', logo: 'ionic', logoColor: 'white' },
-  Electron: { label: 'ELECTRON', color: '47848F', logo: 'electron', logoColor: 'white' },
-  Prisma: { label: 'PRISMA', color: '2D3748', logo: 'prisma', logoColor: 'white' },
-  MySQL: { label: 'MYSQL', color: '005C84', logo: 'mysql', logoColor: 'white' },
-  PostgreSQL: { label: 'POSTGRESQL', color: '316192', logo: 'postgresql', logoColor: 'white' },
-  MariaDB: { label: 'MARIADB', color: '003545', logo: 'mariadb', logoColor: 'white' },
-  SQLite: { label: 'SQLITE', color: '003B57', logo: 'sqlite', logoColor: 'white' },
-  'SQL Server': { label: 'SQL SERVER', color: 'CC2927', logo: 'microsoftsqlserver', logoColor: 'white' },
-  Docker: { label: 'DOCKER', color: '0db7ed', logo: 'docker', logoColor: 'white' },
-  Git: { label: 'GIT', color: 'F1502F', logo: 'git', logoColor: 'white' },
-  Kubernetes: { label: 'KUBERNETES', color: '326CE5', logo: 'kubernetes', logoColor: 'white' },
-  Terraform: { label: 'TERRAFORM', color: '844FBA', logo: 'terraform', logoColor: 'white' },
-  Jenkins: { label: 'JENKINS', color: 'D24939', logo: 'jenkins', logoColor: 'white' },
-  'GitHub Actions': { label: 'GITHUB ACTIONS', color: '2088FF', logo: 'githubactions', logoColor: 'white' },
-  'GitLab CI': { label: 'GITLAB CI', color: 'FC6D26', logo: 'gitlab', logoColor: 'white' },
-  Kafka: { label: 'KAFKA', color: '231F20', logo: 'apachekafka', logoColor: 'white' },
-  RabbitMQ: { label: 'RABBITMQ', color: 'FF6600', logo: 'rabbitmq', logoColor: 'white' },
-  Firebase: { label: 'FIREBASE', color: 'FFCA28', logo: 'firebase', logoColor: 'black' },
-  Supabase: { label: 'SUPABASE', color: '3ECF8E', logo: 'supabase', logoColor: 'white' },
-  Redis: { label: 'REDIS', color: 'DC382D', logo: 'redis', logoColor: 'white' },
-  MongoDB: { label: 'MONGODB', color: '47A248', logo: 'mongodb', logoColor: 'white' },
-  Retrofit: { label: 'RETROFIT', color: '3DDC84', logo: 'android', logoColor: 'white' },
-  Room: { label: 'ROOM', color: '6DB33F', logo: 'android', logoColor: 'white' },
-  Hilt: { label: 'HILT', color: '34A853', logo: 'google', logoColor: 'white' },
+  React: { label: 'REACT', color: '20232A', icon: 'R' },
+  TypeScript: { label: 'TYPESCRIPT', color: '2F74C0', icon: 'TS' },
+  JavaScript: { label: 'JAVASCRIPT', color: 'F7DF1E', icon: 'JS' },
+  'Tailwind CSS': { label: 'TAILWINDCSS', color: '0F172A', icon: 'TW' },
+  Bootstrap: { label: 'BOOTSTRAP', color: '7952B3', icon: 'BS' },
+  'Material UI': { label: 'MATERIAL UI', color: '007FFF', icon: 'MUI' },
+  'Chakra UI': { label: 'CHAKRA UI', color: '319795', icon: 'CU' },
+  Redux: { label: 'REDUX', color: '764ABC', icon: 'RX' },
+  Pinia: { label: 'PINIA', color: 'FFE56C', icon: 'PI' },
+  GraphQL: { label: 'GRAPHQL', color: 'E10098', icon: 'GQ' },
+  'Apollo GraphQL': { label: 'APOLLO', color: '311C87', icon: 'AP' },
+  HTML5: { label: 'HTML5', color: 'E34F26', icon: 'H5' },
+  CSS3: { label: 'CSS3', color: '1572B6', icon: 'C3' },
+  Vite: { label: 'VITE', color: '646CFF', icon: 'V' },
+  'Next.js': { label: 'NEXT.JS', color: '000000', icon: 'NX' },
+  Vue: { label: 'VUE', color: '4FC08D', icon: 'VU' },
+  Nuxt: { label: 'NUXT', color: '00DC82', icon: 'NU' },
+  Angular: { label: 'ANGULAR', color: 'DD0031', icon: 'NG' },
+  Svelte: { label: 'SVELTE', color: 'FF3E00', icon: 'SV' },
+  PHP: { label: 'PHP', color: '777BB4', icon: 'PHP' },
+  Laravel: { label: 'LARAVEL', color: 'FF2D20', icon: 'LV' },
+  CodeIgniter: { label: 'CODEIGNITER', color: 'DD4814', icon: 'CI' },
+  'Node.js': { label: 'NODE.JS', color: '339933', icon: 'NJ' },
+  Express: { label: 'EXPRESS', color: '000000', icon: 'EX' },
+  NestJS: { label: 'NESTJS', color: 'E0234E', icon: 'NE' },
+  'Spring Boot': { label: 'SPRING BOOT', color: '6DB33F', icon: 'SB' },
+  Symfony: { label: 'SYMFONY', color: '000000', icon: 'SY' },
+  Java: { label: 'JAVA', color: '007396', icon: 'J' },
+  Kotlin: { label: 'KOTLIN', color: '7F52FF', icon: 'K' },
+  Python: { label: 'PYTHON', color: '3776AB', icon: 'PY' },
+  Django: { label: 'DJANGO', color: '092E20', icon: 'DJ' },
+  Flask: { label: 'FLASK', color: '000000', icon: 'FL' },
+  FastAPI: { label: 'FASTAPI', color: '009688', icon: 'FA' },
+  Go: { label: 'GO', color: '00ADD8', icon: 'GO' },
+  Gin: { label: 'GIN', color: '008ECF', icon: 'GI' },
+  Fiber: { label: 'FIBER', color: '00ADEF', icon: 'FB' },
+  '.NET': { label: '.NET', color: '512BD4', icon: '.N' },
+  'ASP.NET Core': { label: 'ASP.NET', color: '512BD4', icon: 'AS' },
+  Ruby: { label: 'RUBY', color: 'CC342D', icon: 'RB' },
+  'Ruby on Rails': { label: 'RAILS', color: 'CC0000', icon: 'RR' },
+  Flutter: { label: 'FLUTTER', color: '02569B', icon: 'FT' },
+  'React Native': { label: 'REACT NATIVE', color: '20232A', icon: 'RN' },
+  Android: { label: 'ANDROID', color: '3DDC84', icon: 'AN' },
+  'Jetpack Compose': { label: 'JETPACK COMPOSE', color: '4285F4', icon: 'JC' },
+  Expo: { label: 'EXPO', color: '000020', icon: 'EX' },
+  Ionic: { label: 'IONIC', color: '3880FF', icon: 'IO' },
+  Electron: { label: 'ELECTRON', color: '47848F', icon: 'EL' },
+  Prisma: { label: 'PRISMA', color: '2D3748', icon: 'PR' },
+  MySQL: { label: 'MYSQL', color: '005C84', icon: 'MY' },
+  PostgreSQL: { label: 'POSTGRESQL', color: '316192', icon: 'PG' },
+  MariaDB: { label: 'MARIADB', color: '003545', icon: 'MD' },
+  SQLite: { label: 'SQLITE', color: '003B57', icon: 'SQ' },
+  'SQL Server': { label: 'SQL SERVER', color: 'CC2927', icon: 'SS' },
+  Docker: { label: 'DOCKER', color: '0db7ed', icon: 'DK' },
+  Git: { label: 'GIT', color: 'F1502F', icon: 'GT' },
+  Kubernetes: { label: 'KUBERNETES', color: '326CE5', icon: 'KB' },
+  Terraform: { label: 'TERRAFORM', color: '844FBA', icon: 'TF' },
+  Jenkins: { label: 'JENKINS', color: 'D24939', icon: 'JK' },
+  'GitHub Actions': { label: 'GITHUB ACTIONS', color: '2088FF', icon: 'GA' },
+  'GitLab CI': { label: 'GITLAB CI', color: 'FC6D26', icon: 'GL' },
+  Kafka: { label: 'KAFKA', color: '231F20', icon: 'KF' },
+  RabbitMQ: { label: 'RABBITMQ', color: 'FF6600', icon: 'RM' },
+  Firebase: { label: 'FIREBASE', color: 'FFCA28', icon: 'FB' },
+  Supabase: { label: 'SUPABASE', color: '3ECF8E', icon: 'SB' },
+  Redis: { label: 'REDIS', color: 'DC382D', icon: 'RD' },
+  MongoDB: { label: 'MONGODB', color: '47A248', icon: 'MG' },
+  Retrofit: { label: 'RETROFIT', color: '3DDC84', icon: 'RT' },
+  Room: { label: 'ROOM', color: '6DB33F', icon: 'RM' },
+  Hilt: { label: 'HILT', color: '34A853', icon: 'HL' },
 };
 
 interface SectionRender {
@@ -152,27 +149,66 @@ function panelFill(options: CardOptions, theme: CardTheme): string {
   return theme.bgColor;
 }
 
-function getStackStyle(stack: string): StackStyle {
-  return STACK_STYLES[stack] ?? { ...DEFAULT_STACK_STYLE, label: stack.toUpperCase() };
+function toHex(color: string): string {
+  return color.startsWith('#') ? color : `#${color}`;
 }
 
-function buildBadgeUrl(stack: string, count: number): string {
-  const style = getStackStyle(stack);
-  const params = new URLSearchParams({
-    label: '',
-    message: `${style.label} (${count})`,
-    color: style.color,
-    style: 'for-the-badge',
-    logo: style.logo,
-    logoColor: style.logoColor,
-  });
-  return `https://img.shields.io/static/v1?${params.toString()}`;
+function normalizeHex(hex: string): string {
+  const raw = hex.replace('#', '');
+  if (raw.length === 3) {
+    return raw.split('').map((char) => `${char}${char}`).join('');
+  }
+  return raw;
+}
+
+function adjustHexColor(hex: string, amount: number): string {
+  const raw = normalizeHex(hex);
+  const parse = (index: number): number => Number.parseInt(raw.slice(index, index + 2), 16);
+  const clamp = (value: number): number => Math.max(0, Math.min(255, value));
+
+  const r = clamp(parse(0) + amount);
+  const g = clamp(parse(2) + amount);
+  const b = clamp(parse(4) + amount);
+
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+function pickTextColor(bgHex: string): string {
+  const raw = normalizeHex(bgHex);
+  const r = Number.parseInt(raw.slice(0, 2), 16);
+  const g = Number.parseInt(raw.slice(2, 4), 16);
+  const b = Number.parseInt(raw.slice(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 145 ? '#0f172a' : '#f8fafc';
+}
+
+function fallbackIcon(label: string): string {
+  const tokens = label.split(/[^A-Za-z0-9]+/).filter(Boolean);
+  if (tokens.length === 0) return 'S';
+  if (tokens.length === 1) {
+    return tokens[0].slice(0, 2).toUpperCase();
+  }
+  return `${tokens[0][0]}${tokens[1][0]}`.toUpperCase();
+}
+
+function getStackStyle(stack: string): StackStyle {
+  const style = STACK_STYLES[stack] ?? { ...DEFAULT_STACK_STYLE, label: stack.toUpperCase() };
+  return {
+    ...style,
+    icon: style.icon ?? fallbackIcon(style.label),
+  };
+}
+
+function trimLabel(label: string): string {
+  return label.length <= 16 ? label : `${label.slice(0, 13)}...`;
 }
 
 function estimateBadgeWidth(stack: string, count: number): number {
   const style = getStackStyle(stack);
-  const textLength = `${style.label} (${count})`.length;
-  return Math.min(Math.max(85 + textLength * 7.2, 125), 260);
+  const label = trimLabel(style.label);
+  const countText = `(${count})`;
+  const width = 58 + label.length * 7.2 + countText.length * 6.8;
+  return Math.min(Math.max(width, 128), 290);
 }
 
 function buildSections(stackGroups: StackGroup[]): SectionRender[] {
@@ -262,7 +298,6 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
 
   const lines: string[] = [];
 
-
   if (sections.length === 0) {
     lines.push(`<text x="24" y="58" fill="${theme.textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="14">No stack signals were detected from public repositories.</text>`);
   }
@@ -284,8 +319,29 @@ export function renderCardSvg({ username, totalRepositories, stackGroups, option
         badgeY += 38;
       }
 
-      const badgeUrl = buildBadgeUrl(group.stack, group.repos.length);
-      lines.push(`<image x="${badgeX}" y="${badgeY}" width="${badgeWidth}" height="28" preserveAspectRatio="xMinYMin meet" href="${escapeXml(badgeUrl)}"/>`);
+      const style = getStackStyle(group.stack);
+      const bg = toHex(style.color);
+      const label = trimLabel(style.label);
+      const countText = `(${group.repos.length})`;
+      const textColor = pickTextColor(bg);
+      const iconBg = adjustHexColor(bg, textColor === '#0f172a' ? -40 : 40);
+      const countBg = adjustHexColor(bg, textColor === '#0f172a' ? -24 : 24);
+      const iconTextColor = pickTextColor(iconBg);
+      const countTextColor = pickTextColor(countBg);
+
+      const badgeH = 28;
+      const iconW = 30;
+      const countW = Math.max(44, 24 + countText.length * 7);
+      const labelStartX = badgeX + iconW + 8;
+      const countX = badgeX + badgeWidth - countW;
+
+      lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${badgeWidth}" height="${badgeH}" rx="6" fill="${bg}"/>`);
+      lines.push(`<rect x="${badgeX}" y="${badgeY}" width="${iconW}" height="${badgeH}" rx="6" fill="${iconBg}"/>`);
+      lines.push(`<rect x="${countX}" y="${badgeY}" width="${countW}" height="${badgeH}" rx="6" fill="${countBg}"/>`);
+
+      lines.push(`<text x="${badgeX + 7}" y="${badgeY + 18}" fill="${iconTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10" font-weight="700">${escapeXml(style.icon ?? 'S')}</text>`);
+      lines.push(`<text x="${labelStartX}" y="${badgeY + 18}" fill="${textColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700" letter-spacing="0.9">${escapeXml(label)}</text>`);
+      lines.push(`<text x="${countX + 10}" y="${badgeY + 18}" fill="${countTextColor}" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="10.5" font-weight="700">${countText}</text>`);
 
       badgeX += badgeWidth + 6;
     }
@@ -341,6 +397,3 @@ export function renderErrorSvg(message: string, options: CardOptions): string {
     '</svg>',
   ].join('');
 }
-
-
-
