@@ -13,7 +13,8 @@
   <a href="#quick-start">Quick Start</a> |
   <a href="#api-reference">API Reference</a> |
   <a href="#local-development">Local Dev</a> |
-  <a href="#deploy-to-vercel">Deploy</a>
+  <a href="#deploy-to-vercel">Deploy</a> |
+  <a href="#project-policies">Policies</a>
 </p>
 
 ## Features
@@ -175,8 +176,9 @@ Security notes:
 npm run build
 ```
 
-## Contributing
+## Project Policies
 
-Contributors are welcome!
-
-Feel free to open an issue, submit a pull request, or suggest improvements to make this project better.
+- [Contributing](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security Policy](./SECURITY.md)
+- [MIT License](./LICENSE)
