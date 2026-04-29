@@ -175,6 +175,8 @@ Security notes:
 npm run build
 ```
 
-## License
+## Contributing
 
-MIT
+Contributors are welcome!
+
+Feel free to open an issue, submit a pull request, or suggest improvements to make this project better.
